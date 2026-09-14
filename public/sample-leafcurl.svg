@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="curlBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A241A"/>
+      <stop offset="100%" stop-color="#0E160E"/>
+    </linearGradient>
+    <linearGradient id="curlLeaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#81C784"/>
+      <stop offset="40%" stop-color="#4CAF50"/>
+      <stop offset="80%" stop-color="#FBC02D"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#curlBg)"/>
+  <!-- Field backdrop -->
+  <path d="M 0 210 Q 200 190 400 220" stroke="#253825" stroke-width="2" fill="none"/>
+  <!-- Curled Paddy Blade with yellow margins -->
+  <path d="M 70 260 Q 160 210 240 140 Q 280 100 320 80 Q 290 120 220 180 Q 140 250 80 270 Z" fill="url(#curlLeaf)"/>
+  <!-- Curled Inward Flap -->
+  <path d="M 220 160 Q 270 120 310 90 Q 270 130 230 190 Z" fill="#F57F17" opacity="0.9"/>
+  <!-- Chlorotic Stippling -->
+  <circle cx="210" cy="170" r="3" fill="#FFF59D" opacity="0.8"/>
+  <circle cx="225" cy="155" r="2.5" fill="#FFF59D" opacity="0.8"/>
+  <circle cx="250" cy="135" r="3.5" fill="#FFF59D" opacity="0.7"/>
+  <circle cx="270" cy="115" r="2" fill="#FFE082" opacity="0.9"/>
+  <!-- Central Vein with distortion -->
+  <path d="M 80 260 Q 170 205 245 142 Q 280 105 318 82" stroke="#C8E6C9" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <text x="20" y="35" fill="#FFB74D" font-family="sans-serif" font-size="13" font-weight="600" letter-spacing="1">SAMPLE: PADDY CANOPY — LEAF CURL</text>
+</svg>

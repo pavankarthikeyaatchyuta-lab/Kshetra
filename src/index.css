@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --forest-950: #07170e;
+    --forest-900: #0c2518;
+    --forest-800: #123824;
+    --forest-700: #1b4d32;
+    --leaf-600: #2e7d32;
+    --leaf-500: #388e3c;
+    --leaf-400: #4caf50;
+    --leaf-300: #81c784;
+    --soil-900: #2d1e16;
+    --soil-700: #4e342e;
+    --soil-500: #6d4c41;
+    --soil-300: #8d6e63;
+    --sand-50: #fbf9f4;
+    --sand-100: #f5f2ea;
+    --sand-200: #eae4d5;
+    --sand-300: #ded5c0;
+  }
+
+  body {
+    background-color: var(--sand-50);
+    color: #1a221d;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior-y: none;
+  }
+}
+
+/* Custom scrollbars & utilities */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(18, 56, 36, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(18, 56, 36, 0.4);
+}
+
+/* Animation utilities */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.92; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0.3; }
+  50% { opacity: 0.9; }
+  100% { top: 100%; opacity: 0.3; }
+}
+
+.animate-scan-line {
+  animation: scan-line 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

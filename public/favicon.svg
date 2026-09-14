@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#0C2518" />
+  <!-- Field Furrow Contours -->
+  <path d="M12 46 C 24 40, 40 40, 52 46" stroke="#2E7D32" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M16 52 C 26 47, 38 47, 48 52" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <!-- Leaf and Field Emblem -->
+  <path d="M32 10 C 32 10, 48 18, 48 32 C 48 44, 34 50, 32 50 C 30 50, 16 44, 16 32 C 16 18, 32 10, 32 10 Z" fill="#123824" stroke="#4CAF50" stroke-width="2" />
+  <!-- Leaf Central Vein (Continuity Path) -->
+  <path d="M32 15 L 32 46" stroke="#81C784" stroke-width="2" stroke-linecap="round" />
+  <path d="M32 24 C 37 22, 42 24, 43 27" stroke="#81C784" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M32 31 C 27 29, 22 31, 21 34" stroke="#81C784" stroke-width="1.8" stroke-linecap="round" />
+  <path d="M32 38 C 37 36, 41 38, 42 41" stroke="#81C784" stroke-width="1.8" stroke-linecap="round" />
+  <!-- Integrity Node (Evidence Spark) -->
+  <circle cx="32" cy="15" r="2.5" fill="#FBF9F4" />
+</svg>
