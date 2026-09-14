@@ -20,6 +20,8 @@ import {
 } from './services/storage';
 
 import { SplashScreen } from './components/splash/SplashScreen';
+import { Sidebar } from './components/navigation/Sidebar';
+import { TopBar } from './components/navigation/TopBar';
 import { Header } from './components/navigation/Header';
 import { BottomNav } from './components/navigation/BottomNav';
 import type { TabKey } from './components/navigation/BottomNav';
@@ -37,6 +39,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [viewMode, setViewMode] = useState<'field' | 'office'>('field');
   const [language, setLanguage] = useState<Language>('en');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Network State
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -130,22 +133,47 @@ export function App() {
     setEvidencePackages([initialPkg]);
   };
 
+  // Filter observations if user typed in search query
+  const filteredObservations = searchQuery.trim()
+    ? observations.filter(o => 
+        o.condition.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        o.crop.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        o.location.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : observations;
+
   // Effective online status considering demo simulation
   const effectiveOnline = isOnline && !isSimulatedOffline;
 
   return (
-    <div className="min-h-screen bg-[#EAE4D5] flex justify-center text-[#1A221D] font-sans antialiased">
+    <div className="min-h-screen bg-[#F5F2EA] flex text-[#1A221D] font-sans antialiased selection:bg-[#2E7D32]/20">
       {/* 1.2s Splash Screen on initial launch */}
       {showSplash && (
         <SplashScreen onComplete={() => setShowSplash(false)} />
       )}
 
-      {/* Main Container: Mobile Frame on wide screens, full-width on mobile */}
-      <div className="w-full max-w-md min-h-screen bg-[#FBF9F4] shadow-2xl flex flex-col relative overflow-x-hidden">
+      {/* Desktop Left Sidebar (Visible on lg: and up) */}
+      <div className="hidden lg:flex shrink-0">
+        <Sidebar
+          activeTab={activeTab}
+          onSelectTab={(tab) => {
+            if (tab === 'fields' || tab === 'insights') {
+              setActiveTab('passport');
+            } else {
+              setActiveTab(tab);
+            }
+          }}
+          viewMode={viewMode}
+          onToggleViewMode={() => setViewMode(viewMode === 'office' ? 'field' : 'office')}
+        />
+      </div>
+
+      {/* Main App Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#FBF9F4]">
         
-        {/* Offline Notification Pill */}
+        {/* Offline Notification Banner */}
         {!effectiveOnline && (
-          <div className="bg-[#FFF3E0] text-[#E65100] px-4 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-[#FFE0B2] z-40">
+          <div className="bg-[#FFF3E0] text-[#E65100] px-4 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-[#FFE0B2] z-40 sticky top-0">
             <div className="flex items-center gap-1.5">
               <WifiOff className="w-3.5 h-3.5" />
               <span>OFFLINE · Stored on device · Sync pending</span>
@@ -156,7 +184,35 @@ export function App() {
           </div>
         )}
 
-        {/* Kshetra Office View vs Field App View */}
+        {/* Desktop TopBar with Search, Online Status, Language, User Avatar */}
+        <div className="hidden lg:block">
+          <TopBar
+            language={language}
+            onLanguageChange={setLanguage}
+            isOnline={isOnline}
+            isSimulatedOffline={isSimulatedOffline}
+            onToggleSimulatedOffline={() => setIsSimulatedOffline(!isSimulatedOffline)}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+        </div>
+
+        {/* Mobile Header (Visible below lg:) */}
+        <div className="block lg:hidden">
+          {activeTab !== 'scan' && (
+            <Header
+              language={language}
+              onLanguageChange={setLanguage}
+              isOnline={isOnline}
+              isSimulatedOffline={isSimulatedOffline}
+              onToggleSimulatedOffline={() => setIsSimulatedOffline(!isSimulatedOffline)}
+              viewMode={viewMode}
+              onToggleViewMode={() => setViewMode(viewMode === 'office' ? 'field' : 'office')}
+            />
+          )}
+        </div>
+
+        {/* View Mode Switching: Kshetra Office vs Field Experience */}
         {viewMode === 'office' ? (
           <OfficeScreen
             field={field}
@@ -166,90 +222,77 @@ export function App() {
             language={language}
           />
         ) : (
-          <>
-            {/* Header */}
-            {activeTab !== 'scan' && (
-              <Header
+          <main className="flex-1 overflow-x-hidden">
+            {activeTab === 'home' && (
+              <HomeScreen
+                field={field}
+                observations={filteredObservations}
+                onUpdateField={handleUpdateField}
+                onNavigate={setActiveTab}
+                isOnline={effectiveOnline}
+                onDeleteObservation={handleDeleteObservation}
+              />
+            )}
+
+            {activeTab === 'scan' && (
+              <ScanScreen
+                field={field}
+                onAddObservation={handleAddObservation}
+                onRecordInterventionPrompt={() => setActiveTab('passport')}
+                onBack={() => setActiveTab('home')}
+                language={language}
+                isOnline={effectiveOnline}
+              />
+            )}
+
+            {activeTab === 'passport' && (
+              <PassportScreen
+                field={field}
+                observations={filteredObservations}
+                interventions={interventions}
+                onDeleteObservation={handleDeleteObservation}
+                onDeleteIntervention={handleDeleteIntervention}
+                onAddIntervention={handleAddIntervention}
+                onNavigateToScan={() => setActiveTab('scan')}
+                language={language}
+              />
+            )}
+
+            {activeTab === 'evidence' && (
+              <EvidenceScreen
+                field={field}
+                evidencePackages={evidencePackages}
+                onSaveEvidencePackage={handleSaveEvidencePackage}
+                onUpdateEvidencePackage={handleUpdateEvidencePackage}
+                onDeleteEvidencePackage={handleDeleteEvidencePackage}
+                language={language}
+              />
+            )}
+
+            {activeTab === 'more' && (
+              <MoreScreen
                 language={language}
                 onLanguageChange={setLanguage}
                 isOnline={isOnline}
                 isSimulatedOffline={isSimulatedOffline}
                 onToggleSimulatedOffline={() => setIsSimulatedOffline(!isSimulatedOffline)}
-                viewMode={viewMode}
-                onToggleViewMode={() => setViewMode('office')}
+                onResetDemoData={handleResetDemoData}
+                onOpenOffice={() => setViewMode('office')}
               />
             )}
-
-            {/* Screens Area */}
-            <main className="flex-1">
-              {activeTab === 'home' && (
-                <HomeScreen
-                  field={field}
-                  observations={observations}
-                  onUpdateField={handleUpdateField}
-                  onNavigate={setActiveTab}
-                  language={language}
-                />
-              )}
-
-              {activeTab === 'scan' && (
-                <ScanScreen
-                  field={field}
-                  onAddObservation={handleAddObservation}
-                  onRecordInterventionPrompt={() => setActiveTab('passport')}
-                  onBack={() => setActiveTab('home')}
-                  language={language}
-                  isOnline={effectiveOnline}
-                />
-              )}
-
-              {activeTab === 'passport' && (
-                <PassportScreen
-                  field={field}
-                  observations={observations}
-                  interventions={interventions}
-                  onDeleteObservation={handleDeleteObservation}
-                  onDeleteIntervention={handleDeleteIntervention}
-                  onAddIntervention={handleAddIntervention}
-                  onNavigateToScan={() => setActiveTab('scan')}
-                  language={language}
-                />
-              )}
-
-              {activeTab === 'evidence' && (
-                <EvidenceScreen
-                  field={field}
-                  evidencePackages={evidencePackages}
-                  onSaveEvidencePackage={handleSaveEvidencePackage}
-                  onUpdateEvidencePackage={handleUpdateEvidencePackage}
-                  onDeleteEvidencePackage={handleDeleteEvidencePackage}
-                  language={language}
-                />
-              )}
-
-              {activeTab === 'more' && (
-                <MoreScreen
-                  language={language}
-                  onLanguageChange={setLanguage}
-                  isOnline={isOnline}
-                  isSimulatedOffline={isSimulatedOffline}
-                  onToggleSimulatedOffline={() => setIsSimulatedOffline(!isSimulatedOffline)}
-                  onResetDemoData={handleResetDemoData}
-                  onOpenOffice={() => setViewMode('office')}
-                />
-              )}
-            </main>
-
-            {/* Bottom Navigation */}
-            {activeTab !== 'scan' && (
-              <BottomNav
-                activeTab={activeTab}
-                onSelectTab={setActiveTab}
-                language={language}
-              />
-            )}
-          </>
+          </main>
         )}
+
+        {/* Mobile Bottom Navigation (Visible on mobile/tablet below lg:) */}
+        <div className="block lg:hidden">
+          {activeTab !== 'scan' && viewMode === 'field' && (
+            <BottomNav
+              activeTab={activeTab}
+              onSelectTab={setActiveTab}
+              language={language}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

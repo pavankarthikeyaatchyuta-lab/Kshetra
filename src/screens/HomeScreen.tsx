@@ -1,27 +1,31 @@
-import { useState } from 'react';
 import type { FC } from 'react';
-import type { Field, Observation, Language } from '../models/types';
-import { translations } from '../services/i18n';
+import { useState } from 'react';
+import type { Field, Observation } from '../models/types';
 import { requestRealLocation } from '../services/hardware';
 import { 
-  Camera, 
-  ShieldCheck, 
-  MapPin, 
   Sprout, 
+  MapPin, 
   Layers, 
-  History, 
   ArrowRight, 
-  Sparkles,
-  CheckCircle2,
-  AlertTriangle
+  Trash2, 
+  MoreVertical, 
+  Info 
 } from 'lucide-react';
+
+import { QuickActions } from '../components/dashboard/QuickActions';
+import { HealthSummaryCard } from '../components/dashboard/HealthSummaryCard';
+import { WeatherCard } from '../components/weather/WeatherCard';
+import { CadastralMap } from '../components/map/CadastralMap';
+import { RecentScansCard } from '../components/dashboard/RecentScansCard';
+import { SystemStatusCard } from '../components/dashboard/SystemStatusCard';
 
 interface HomeScreenProps {
   field: Field;
   observations: Observation[];
   onUpdateField: (field: Field) => void;
   onNavigate: (tab: 'home' | 'scan' | 'passport' | 'evidence' | 'more') => void;
-  language: Language;
+  isOnline: boolean;
+  onDeleteObservation?: (id: string) => void;
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({
@@ -29,23 +33,22 @@ export const HomeScreen: FC<HomeScreenProps> = ({
   observations,
   onUpdateField,
   onNavigate,
-  language,
+  isOnline,
+  onDeleteObservation,
 }) => {
-  const t = translations[language];
   const [isLocating, setIsLocating] = useState(false);
-  const [locationError, setLocationError] = useState<string | null>(null);
+  const [activeMenuObsId, setActiveMenuObsId] = useState<string | null>(null);
 
-  // Time-based dynamic greeting
+  // Time-of-day greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return t.goodMorning;
-    if (hour < 17) return t.goodAfternoon;
-    return t.goodEvening;
+    if (hour < 12) return 'Good morning! ☀️';
+    if (hour < 17) return 'Good afternoon! 🌤️';
+    return 'Good evening! 🌙';
   };
 
   const handleUseMyLocation = async () => {
     setIsLocating(true);
-    setLocationError(null);
     try {
       const res = await requestRealLocation();
       if (res.status === 'success') {
@@ -55,243 +58,266 @@ export const HomeScreen: FC<HomeScreenProps> = ({
           coordinates: res.coordinates,
           isDemo: false,
         });
-      } else {
-        setLocationError(res.displayText);
       }
     } catch {
-      setLocationError('Unable to access device location');
+      // ignore
     } finally {
       setIsLocating(false);
     }
   };
 
-  const handleUseDemoField = () => {
-    onUpdateField({
-      ...field,
-      location: 'Demo field',
-      coordinates: undefined,
-      isDemo: true,
-    });
-    setLocationError(null);
-  };
-
   return (
-    <div className="space-y-4 pb-20 pt-1 max-w-md mx-auto px-4">
-      {/* Greeting Header */}
-      <div className="pt-2">
-        <span className="text-xs font-semibold tracking-wider text-[#2E7D32] uppercase">
-          {getGreeting()}
-        </span>
-        <h1 className="text-2xl font-bold tracking-tight text-[#0C2518] mt-0.5">
-          {t.intelligenceAtGlance}
-        </h1>
-      </div>
-
-      {/* Differentiator Banner: EVIDENCE CONTINUITY */}
-      <div className="rounded-2xl p-3.5 bg-linear-to-r from-[#0C2518] to-[#18442D] text-[#FBF9F4] shadow-md border border-[#2E7D32]/30 relative overflow-hidden">
-        <div className="flex items-start gap-3">
-          <div className="p-2 rounded-xl bg-[#2E7D32]/40 text-[#81C784] shrink-0 mt-0.5">
-            <Sparkles className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xs font-extrabold tracking-widest uppercase text-[#81C784]">
-                {t.evidenceContinuity}
-              </h3>
-            </div>
-            <p className="text-xs text-[#D7E3DA] mt-1 leading-relaxed">
-              {t.evidenceContinuityDesc}
-            </p>
-          </div>
+    <div className="space-y-6 pb-20 pt-2 px-4 sm:px-6 max-w-7xl mx-auto">
+      {/* 1. Header Greeting */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0C2518]">
+            {getGreeting()}
+          </h1>
+          <p className="text-xs sm:text-sm text-[#6D4C41] font-medium mt-0.5">
+            Field intelligence at a glance.
+          </p>
         </div>
       </div>
 
-      {/* Active Field Card */}
-      <div className="rounded-2xl bg-white border border-[#EAE4D5] p-4 shadow-sm relative overflow-hidden">
-        <div className="flex items-center justify-between pb-3 border-b border-[#F0ECE1]">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold tracking-widest text-[#6D4C41] uppercase">
-              {t.activeField}
-            </span>
-            <span className="px-2 py-0.5 rounded-md bg-[#0C2518] text-[#81C784] font-mono text-xs font-bold">
-              {field.id}
-            </span>
+      {/* 2. Top Hero Grid: Active Field Banner + 4 Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Active Field Cinematic Card (7 cols) */}
+        <div className="lg:col-span-7 rounded-3xl overflow-hidden border border-[#DED5C0] shadow-sm relative flex flex-col justify-between min-h-[280px] bg-[#0C2518] text-[#FBF9F4] group">
+          {/* Background Cinematic Banner */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/paddy-banner.svg"
+              alt="Paddy Field Sunset"
+              className="w-full h-full object-cover opacity-85 group-hover:scale-102 transition-transform duration-700"
+            />
+            {/* Dark gradient overlay on left for sharp legibility */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-transparent" />
           </div>
-          {field.isDemo ? (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
-              {t.demoBadge}
-            </span>
-          ) : (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
-              LIVE FIELD
-            </span>
-          )}
-        </div>
 
-        {/* Field Details Grid */}
-        <div className="grid grid-cols-2 gap-3 pt-3 text-xs">
-          <div className="flex items-center gap-2 text-[#2D1E16]">
-            <Sprout className="w-4 h-4 text-[#2E7D32] shrink-0" />
+          {/* Top Info Row */}
+          <div className="relative z-10 p-5 sm:p-6 flex items-start justify-between gap-3">
             <div>
-              <div className="text-[10px] text-[#6D4C41] uppercase">{t.crop}</div>
-              <div className="font-semibold text-sm">{field.crop}</div>
-            </div>
-          </div>
+              <div className="text-[11px] font-bold tracking-widest text-[#A5D6A7] uppercase">
+                Active Field
+              </div>
+              <div className="flex items-center gap-2 mt-0.5">
+                <h2 className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
+                  {field.id}
+                </h2>
+                {field.isDemo && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFF3E0] text-[#E65100]">
+                    DEMO
+                  </span>
+                )}
+              </div>
 
-          <div className="flex items-center gap-2 text-[#2D1E16]">
-            <Layers className="w-4 h-4 text-[#8D6E63] shrink-0" />
-            <div>
-              <div className="text-[10px] text-[#6D4C41] uppercase">{t.area}</div>
-              <div className="font-semibold text-sm">{field.area}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Location Section */}
-        <div className="mt-3 pt-3 border-t border-[#F0ECE1]">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-start gap-1.5 flex-1">
-              <MapPin className="w-4 h-4 text-[#2E7D32] shrink-0 mt-0.5" />
-              <div>
-                <span className="text-[10px] text-[#6D4C41] uppercase font-semibold">
-                  {t.location}:
-                </span>{' '}
-                <span className="text-xs font-medium text-[#1A221D] break-all">
-                  {field.location === 'Location not set' ? t.locationNotSet : field.location}
-                </span>
+              {/* Field Attributes */}
+              <div className="space-y-1 mt-3 text-xs text-[#EAE4D5]">
+                <div className="flex items-center gap-2">
+                  <Sprout className="w-3.5 h-3.5 text-[#81C784]" />
+                  <span className="font-semibold text-white">{field.crop}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Layers className="w-3.5 h-3.5 text-[#81C784]" />
+                  <span>{field.area}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-[#81C784]" />
+                  <span>{field.location}</span>
+                  <Info className="w-3 h-3 text-[#A5D6A7]/70" />
+                </div>
+                <div className="flex items-center gap-2 pt-0.5">
+                  <span className="w-2 h-2 rounded-full bg-[#76FF03] animate-pulse" />
+                  <span className="font-medium text-[#76FF03]">{field.status}</span>
+                </div>
               </div>
             </div>
+
+            {/* View on Map Button */}
+            <button
+              onClick={() => onNavigate('passport')}
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-xs font-semibold text-white flex items-center gap-1.5 transition-all"
+            >
+              <MapPin className="w-3 h-3 text-[#81C784]" />
+              <span>View on Map</span>
+            </button>
           </div>
 
-          {/* Location Action Buttons */}
-          <div className="flex items-center gap-2 mt-2.5">
+          {/* Bottom Dual Action Buttons */}
+          <div className="relative z-10 p-5 sm:p-6 pt-0 flex flex-wrap items-center gap-3">
             <button
-              onClick={handleUseMyLocation}
-              disabled={isLocating}
-              className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#E8F5E9] hover:bg-[#C8E6C9] text-[#2E7D32] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors active:scale-98"
+              onClick={() => onNavigate('scan')}
+              className="py-2.5 px-5 rounded-xl bg-[#2E7D32] hover:bg-[#388E3C] text-white font-bold text-xs tracking-wider uppercase shadow-md flex items-center gap-2 transition-all active:scale-95"
             >
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{isLocating ? 'Capturing GPS...' : t.useMyLocation}</span>
+              <span>Scan Field</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
 
-            {field.location !== 'Demo field' && (
-              <button
-                onClick={handleUseDemoField}
-                className="py-1.5 px-2.5 rounded-lg bg-[#F5F2EA] hover:bg-[#EAE4D5] text-[#6D4C41] text-xs font-medium transition-colors"
-              >
-                {t.useDemoField}
-              </button>
-            )}
-          </div>
-
-          {locationError && (
-            <p className="mt-1.5 text-[11px] text-[#C62828] font-medium flex items-center gap-1">
-              <AlertTriangle className="w-3 h-3" />
-              {locationError}
-            </p>
-          )}
-        </div>
-
-        {/* Field Status */}
-        <div className="mt-3 pt-2.5 border-t border-[#F0ECE1] flex items-center justify-between text-xs">
-          <span className="text-[#6D4C41]">{t.status}:</span>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#E8F5E9] text-[#2E7D32] font-semibold text-[11px]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#2E7D32]" />
-            {t.monitoring}
-          </span>
-        </div>
-      </div>
-
-      {/* Primary Action Buttons */}
-      <div className="space-y-2">
-        <button
-          onClick={() => onNavigate('scan')}
-          className="w-full py-3.5 px-4 rounded-2xl bg-[#0C2518] hover:bg-[#123824] text-white font-bold text-sm tracking-wide shadow-md flex items-center justify-center gap-2.5 transition-all duration-150 active:scale-98"
-        >
-          <Camera className="w-5 h-5 text-[#81C784]" />
-          <span>{t.scanFieldCTA}</span>
-        </button>
-
-        <button
-          onClick={() => onNavigate('passport')}
-          className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#F5F2EA] text-[#123824] border border-[#DED5C0] font-semibold text-xs tracking-wide flex items-center justify-center gap-2 transition-all active:scale-98"
-        >
-          <ShieldCheck className="w-4 h-4 text-[#2E7D32]" />
-          <span>{t.openPassportCTA}</span>
-          <ArrowRight className="w-3.5 h-3.5 text-[#6D4C41] ml-auto" />
-        </button>
-      </div>
-
-      {/* Field Story Preview Timeline */}
-      <div className="rounded-2xl bg-white border border-[#EAE4D5] p-4 shadow-sm">
-        <div className="flex items-center justify-between pb-3 border-b border-[#F0ECE1]">
-          <div className="flex items-center gap-2">
-            <History className="w-4 h-4 text-[#2E7D32]" />
-            <h2 className="text-sm font-bold text-[#0C2518]">
-              {t.fieldStoryPreview}
-            </h2>
-          </div>
-          <button
-            onClick={() => onNavigate('passport')}
-            className="text-[11px] font-semibold text-[#2E7D32] hover:underline"
-          >
-            View All ({observations.length})
-          </button>
-        </div>
-
-        <div className="space-y-3 pt-3">
-          {observations.slice(0, 3).map((obs) => (
-            <div
-              key={obs.id}
+            <button
               onClick={() => onNavigate('passport')}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-[#FBF9F4] border border-[#F0ECE1] hover:bg-[#F5F2EA] transition-colors cursor-pointer"
+              className="py-2.5 px-4 rounded-xl bg-black/40 hover:bg-black/60 text-white border border-white/30 backdrop-blur-xs font-semibold text-xs transition-all active:scale-95"
             >
-              <div className="flex items-center gap-3">
-                <img
-                  src={obs.photoUrl}
-                  alt={obs.condition}
-                  className="w-10 h-10 rounded-lg object-cover border border-[#DED5C0]"
-                />
-                <div>
-                  <div className="font-semibold text-xs text-[#0C2518] line-clamp-1">
-                    {obs.condition}
-                  </div>
-                  <div className="text-[10px] text-[#6D4C41] flex items-center gap-1.5 mt-0.5">
-                    <span>{new Date(obs.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
-                    {obs.isDemo && (
-                      <span className="px-1 rounded bg-[#FFF3E0] text-[#E65100] text-[9px] font-bold">
-                        {t.demoBadge}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+              Open Field Passport
+            </button>
+          </div>
+        </div>
 
-              <div className="text-right">
-                <div className="text-xs font-bold font-mono text-[#2E7D32]">
-                  {obs.confidence}%
-                </div>
-                <div className="text-[9px] text-[#8D6E63] uppercase">
-                  {t.confidenceLabel}
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* 4 Quick Action Cards Grid (5 cols) */}
+        <div className="lg:col-span-5 flex flex-col justify-between">
+          <QuickActions
+            onScanField={() => onNavigate('scan')}
+            onRecordAction={() => onNavigate('passport')}
+            onEvidenceMode={() => onNavigate('evidence')}
+            onViewPassport={() => onNavigate('passport')}
+          />
         </div>
       </div>
 
-      {/* Quick Integrity Proof Card */}
-      <div className="rounded-xl p-3 bg-[#F5F2EA] border border-[#EAE4D5] flex items-center justify-between text-xs">
-        <div className="flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
-          <span className="font-medium text-[#2D1E16]">Cryptographic Hash Continuity</span>
+      {/* 3. Middle Metrics Row: Current Field Health + Weather & Field Conditions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <HealthSummaryCard
+          score={86}
+          statusText="Good"
+          lastScanned="2 days ago"
+          nextScan="In 5 days"
+        />
+
+        <WeatherCard
+          location={field.location}
+          hasCoordinates={!!field.coordinates}
+          onUseMyLocation={handleUseMyLocation}
+          isLocating={isLocating}
+        />
+      </div>
+
+      {/* 4. Bottom 3-Column Command Center Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Column 1: Field Story Timeline (5 cols) */}
+        <div className="lg:col-span-5 bg-white rounded-2xl p-5 border border-[#EAE4D5] shadow-xs space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE1]">
+            <div>
+              <h3 className="text-xs font-bold text-[#0C2518]">
+                Field Story
+              </h3>
+              <p className="text-[10px] text-[#6D4C41]">
+                A timeline of what your field has experienced.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavigate('passport')}
+              className="text-[11px] font-semibold text-[#2E7D32] hover:underline flex items-center gap-0.5"
+            >
+              <span>View All</span>
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+
+          {/* Timeline Items with Visual Photos & Status Badges */}
+          <div className="relative pl-5 space-y-3.5 border-l-2 border-[#EAE4D5] ml-2">
+            {observations.slice(0, 4).map((obs) => {
+              const isHealthy = obs.severity <= 10;
+              const isIntervention = obs.condition.toLowerCase().includes('recovery') || obs.condition.toLowerCase().includes('post');
+              const isDisease = obs.severity > 25;
+
+              return (
+                <div key={obs.id} className="relative group">
+                  {/* Timeline Dot */}
+                  <span className={`absolute -left-[27px] top-3.5 w-3 h-3 rounded-full border-2 border-white shadow-2xs ${
+                    isDisease ? 'bg-[#C62828]' : isHealthy ? 'bg-[#2E7D32]' : 'bg-[#558B2F]'
+                  }`} />
+
+                  {/* Timeline Item Content Card */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#FBF9F4] border border-[#F0ECE1] hover:border-[#81C784] transition-all">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img
+                        src={obs.photoUrl}
+                        alt={obs.condition}
+                        className="w-12 h-12 rounded-xl object-cover border border-[#DED5C0] shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <div className="text-[10px] text-[#8D6E63] font-mono leading-none">
+                          {new Date(obs.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <h4 className="text-xs font-bold text-[#0C2518] truncate mt-0.5">
+                          {obs.condition}
+                        </h4>
+                        <div className="text-[10px] text-[#6D4C41] truncate mt-0.5">
+                          {obs.observations && obs.observations[0] ? obs.observations[0] : 'Observation recorded'}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Badge & Three-Dot Menu */}
+                    <div className="flex items-center gap-2 shrink-0 pl-2">
+                      {isHealthy && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E8F5E9] text-[#2E7D32]">
+                          Health {obs.confidence}%
+                        </span>
+                      )}
+                      {isDisease && !isHealthy && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFEBEE] text-[#C62828]">
+                          Severity {obs.severity}%
+                        </span>
+                      )}
+                      {isIntervention && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F8E9] text-[#558B2F]">
+                          Action
+                        </span>
+                      )}
+
+                      <div className="relative">
+                        <button
+                          onClick={() => setActiveMenuObsId(activeMenuObsId === obs.id ? null : obs.id)}
+                          className="p-1 text-[#8D6E63] hover:text-[#0C2518] rounded"
+                        >
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                        {activeMenuObsId === obs.id && (
+                          <div className="absolute right-0 top-6 z-20 bg-white rounded-xl shadow-lg border border-[#DED5C0] p-1 w-28">
+                            <button
+                              onClick={() => {
+                                onDeleteObservation?.(obs.id);
+                                setActiveMenuObsId(null);
+                              }}
+                              className="w-full text-left px-2.5 py-1.5 text-xs text-[#C62828] hover:bg-[#FFEBEE] rounded-lg font-medium flex items-center gap-1.5"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <button
-          onClick={() => onNavigate('evidence')}
-          className="text-[11px] font-bold text-[#2E7D32] hover:underline"
-        >
-          Verify Proof →
-        </button>
+
+        {/* Column 2: Field Location (Cadastral Satellite Map) (4 cols) */}
+        <div className="lg:col-span-4">
+          <CadastralMap
+            field={field}
+            onUseMyLocation={handleUseMyLocation}
+            isLocating={isLocating}
+          />
+        </div>
+
+        {/* Column 3: Recent Scans + System Status (3 cols) */}
+        <div className="lg:col-span-3 space-y-5">
+          <RecentScansCard
+            observations={observations}
+            onViewAll={() => onNavigate('passport')}
+            onSelectObservation={() => onNavigate('passport')}
+          />
+
+          <SystemStatusCard
+            locationStatus={field.coordinates ? 'ready' : 'not_set'}
+            isOnline={isOnline}
+          />
+        </div>
       </div>
     </div>
   );

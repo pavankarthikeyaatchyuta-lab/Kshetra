@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Soil and crop plot fills -->
+    <pattern id="soilPlot" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#2E4A28"/>
+      <line x1="0" y1="10" x2="40" y2="10" stroke="#253D20" stroke-width="2"/>
+      <line x1="0" y1="20" x2="40" y2="20" stroke="#253D20" stroke-width="2"/>
+      <line x1="0" y1="30" x2="40" y2="30" stroke="#253D20" stroke-width="2"/>
+    </pattern>
+    <pattern id="cropPlot" width="30" height="30" patternUnits="userSpaceOnUse">
+      <rect width="30" height="30" fill="#3D6633"/>
+      <line x1="0" y1="0" x2="30" y2="30" stroke="#33572B" stroke-width="1.5"/>
+    </pattern>
+    <pattern id="darkPlot" width="50" height="50" patternUnits="userSpaceOnUse">
+      <rect width="50" height="50" fill="#22381E"/>
+      <circle cx="25" cy="25" r="4" fill="#1C3018"/>
+    </pattern>
+    <filter id="polyGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base Terrain -->
+  <rect width="800" height="500" fill="#1E3319"/>
+
+  <!-- Neighboring Farmland Parcels -->
+  <polygon points="20,20 280,30 250,220 10,200" fill="url(#soilPlot)"/>
+  <polygon points="290,30 520,10 500,180 260,210" fill="url(#cropPlot)"/>
+  <polygon points="530,10 790,25 760,240 510,190" fill="url(#darkPlot)"/>
+  <polygon points="10,210 240,230 200,480 15,470" fill="url(#cropPlot)"/>
+  <polygon points="520,200 750,250 780,480 540,460" fill="url(#soilPlot)"/>
+  <polygon points="210,410 530,390 510,490 200,490" fill="url(#darkPlot)"/>
+
+  <!-- Field access rural roads and canals -->
+  <path d="M 0 205 L 800 245" stroke="#796348" stroke-width="10" fill="none" opacity="0.8"/>
+  <path d="M 245 0 L 220 500" stroke="#8C7355" stroke-width="8" fill="none" opacity="0.85"/>
+  <path d="M 515 0 L 535 500" stroke="#6D5A43" stroke-width="9" fill="none" opacity="0.85"/>
+
+  <!-- Canal water line -->
+  <path d="M 0 212 L 800 252" stroke="#4A6572" stroke-width="3" fill="none" opacity="0.7"/>
+
+  <!-- Trees along boundaries -->
+  <g fill="#183614" opacity="0.9">
+    <circle cx="235" cy="80" r="12"/>
+    <circle cx="238" cy="140" r="14"/>
+    <circle cx="240" cy="180" r="11"/>
+    <circle cx="510" cy="70" r="13"/>
+    <circle cx="515" cy="130" r="15"/>
+    <circle cx="525" cy="300" r="14"/>
+    <circle cx="530" cy="360" r="12"/>
+    <circle cx="350" cy="220" r="10"/>
+    <circle cx="410" cy="223" r="12"/>
+  </g>
+
+  <!-- TARGET CADASTRAL PARCEL KR-1042 -->
+  <!-- Lush inner field fill -->
+  <polygon points="265,225 495,235 480,380 245,365" fill="#438933" opacity="0.75"/>
+  
+  <!-- Cadastral Glowing Boundary Polygon -->
+  <polygon points="265,225 495,235 480,380 245,365" stroke="#76FF03" stroke-width="3.5" fill="none" stroke-dasharray="10 5" filter="url(#polyGlow)"/>
+
+  <!-- Corner Survey Pegs -->
+  <circle cx="265" cy="225" r="5" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2"/>
+  <circle cx="495" cy="235" r="5" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2"/>
+  <circle cx="480" cy="380" r="5" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2"/>
+  <circle cx="245" cy="365" r="5" fill="#FFFFFF" stroke="#2E7D32" stroke-width="2"/>
+
+  <!-- Centroid Pin and Badge for KR-1042 -->
+  <g transform="translate(370, 290)">
+    <!-- Pin marker shadow -->
+    <ellipse cx="0" cy="14" rx="14" ry="5" fill="#000000" opacity="0.4"/>
+    
+    <!-- Centroid Badge Background -->
+    <rect x="-48" y="-22" width="96" height="28" rx="8" fill="#0C2518" stroke="#76FF03" stroke-width="1.8"/>
+    
+    <!-- Pin Icon -->
+    <path d="M -34 -13 C -34 -17, -30 -20, -26 -20 C -22 -20, -18 -17, -18 -13 C -18 -8, -26 -2, -26 -2 C -26 -2, -34 -8, -34 -13 Z" fill="#76FF03"/>
+    <circle cx="-26" cy="-13" r="2.5" fill="#0C2518"/>
+    
+    <!-- Label -->
+    <text x="-12" y="-3" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="bold" letter-spacing="0.5">KR-1042</text>
+  </g>
+</svg>

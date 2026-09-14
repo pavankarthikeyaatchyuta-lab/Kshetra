@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="skyGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7BA7BC"/>
+      <stop offset="35%" stop-color="#C5D3C1"/>
+      <stop offset="65%" stop-color="#FCE1A8"/>
+      <stop offset="100%" stop-color="#F4A261"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="65%" cy="35%" r="40%">
+      <stop offset="0%" stop-color="#FFF8E7" stop-opacity="0.9"/>
+      <stop offset="25%" stop-color="#FFE082" stop-opacity="0.6"/>
+      <stop offset="70%" stop-color="#FFB74D" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FF9800" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mountains" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#557B67" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#2D5A43" stop-opacity="0.8"/>
+    </linearGradient>
+    <linearGradient id="fieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4E8C3B"/>
+      <stop offset="50%" stop-color="#2E6B23"/>
+      <stop offset="100%" stop-color="#143D10"/>
+    </linearGradient>
+    <linearGradient id="paddyGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4E157"/>
+      <stop offset="40%" stop-color="#7CB342"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky and Sunrise -->
+  <rect width="1000" height="500" fill="url(#skyGold)"/>
+  <circle cx="650" cy="180" r="300" fill="url(#sunGlow)"/>
+
+  <!-- Distant Blue Ridge Mountains -->
+  <path d="M 0 300 Q 180 200 360 270 T 720 220 T 1000 280 L 1000 500 L 0 500 Z" fill="url(#mountains)" opacity="0.6"/>
+  <path d="M 0 320 Q 250 250 500 300 T 1000 290 L 1000 500 L 0 500 Z" fill="#386B4D" opacity="0.5"/>
+
+  <!-- Tree line on horizon -->
+  <path d="M 0 330 Q 150 325 300 335 T 600 328 T 900 332 T 1000 330 L 1000 500 L 0 500 Z" fill="#1B4D32" opacity="0.7"/>
+
+  <!-- Terraced Paddy Basin -->
+  <path d="M 0 345 C 300 330 700 330 1000 350 L 1000 500 L 0 500 Z" fill="url(#fieldGrad)"/>
+
+  <!-- Golden Sunbeams -->
+  <polygon points="650,180 400,500 480,500" fill="#FFFDE7" opacity="0.15"/>
+  <polygon points="650,180 580,500 680,500" fill="#FFFDE7" opacity="0.18"/>
+  <polygon points="650,180 780,500 900,500" fill="#FFFDE7" opacity="0.12"/>
+
+  <!-- Foreground lush paddy ears & blades -->
+  <path d="M 200 500 Q 280 380 340 330 Q 360 410 390 500 Z" fill="url(#paddyGold)"/>
+  <path d="M 280 500 Q 360 360 440 310 Q 450 400 490 500 Z" fill="url(#paddyGold)"/>
+  <path d="M 380 500 Q 480 350 560 290 Q 565 380 610 500 Z" fill="url(#paddyGold)"/>
+  <path d="M 500 500 Q 600 360 680 320 Q 670 410 710 500 Z" fill="url(#paddyGold)"/>
+  <path d="M 620 500 Q 720 370 800 340 Q 790 420 830 500 Z" fill="url(#paddyGold)"/>
+  <path d="M 740 500 Q 820 380 920 350 Q 890 440 950 500 Z" fill="url(#paddyGold)"/>
+
+  <!-- Golden drooping grains -->
+  <g fill="#FDD835" opacity="0.9">
+    <ellipse cx="335" cy="335" rx="5" ry="9" transform="rotate(35 335 335)"/>
+    <ellipse cx="345" cy="345" rx="5" ry="9" transform="rotate(40 345 345)"/>
+    <ellipse cx="435" cy="315" rx="5" ry="9" transform="rotate(30 435 315)"/>
+    <ellipse cx="448" cy="325" rx="5" ry="9" transform="rotate(38 448 325)"/>
+    <ellipse cx="555" cy="295" rx="6" ry="10" transform="rotate(25 555 295)"/>
+    <ellipse cx="568" cy="308" rx="6" ry="10" transform="rotate(32 568 308)"/>
+    <ellipse cx="675" cy="325" rx="5" ry="9" transform="rotate(-30 675 325)"/>
+    <ellipse cx="665" cy="338" rx="5" ry="9" transform="rotate(-35 665 338)"/>
+  </g>
+</svg>
