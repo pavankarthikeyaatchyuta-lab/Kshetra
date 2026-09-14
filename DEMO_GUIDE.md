@@ -37,10 +37,12 @@
 
 ### Step 3: Field Scan & Structured Analysis (0:30 - 0:50)
 1. **Tap the Center "Scan" Hero Button**:
-   - Opens the camera viewfinder with orientation framing reticle and live metadata (`GPS`, `Device Sensor Stability`, `KR-1042`).
-   - Tap **"Start Camera"** to use real device lens (or pick a sample leaf: *Leaf Curl*, *Storm Lodging*, or *Healthy Leaf*).
-2. **Tap Shutter / Select "Leaf Curl"** → Tap **"Analyze"**:
-   - Watch the 5-stage milestone analysis sequence:
+   - The live camera viewfinder automatically starts on entry with active reticle framing and live metadata (`GPS`, `Motion Stability`, `Parcel KR-1042`).
+   - Notice the transparent distinction between **Live Camera Capture** and **Demo Presets**:
+     - *Live Camera*: Tap the shutter button — immediately captures the active video frame (`PHOTO CAPTURED`) and dynamically computes canvas RGB/chlorophyll indices.
+     - *Demo Presets*: Tap **"Leaf Curl"**, **"Storm Lodging"**, or **"Healthy Leaf"** — explicitly marked as `DEMO SPECIMEN SELECTED` with benchmark data.
+2. **Tap "Analyze"**:
+   - Watch the 5-stage sequential milestone analysis:
      1. *Reading image ✓*
      2. *Identifying crop ✓*
      3. *Assessing visible condition ✓*
@@ -58,20 +60,22 @@
 ### Step 4: Digital Field Passport & Delete Lifecycle (0:50 - 1:10)
 1. **Navigate to "Passport"**:
    - Review the vertical chronological timeline:
-     - *12 JUN — Sowing recorded (DEMO)*
-     - *18 JUN — Healthy baseline 94% (DEMO)*
-     - *12 JUL — Disease observed 38% (DEMO)*
-     - *16 JUL — Intervention recorded (DEMO)*
+     - *2 SEP — Storm damage 81% (DEMO)*
      - *28 JUL — Recovery 6% (DEMO)*
-     - *26 SEP — Storm damage 81% (DEMO)*
+     - *16 JUL — Intervention recorded (DEMO)*
+     - *12 JUL — Disease observed 38% (DEMO)*
+     - *18 JUN — Healthy baseline 94% (DEMO)*
+     - *12 JUN — Sowing recorded (DEMO)*
      - *+ Your newly added scan!*
+   - Observe the unified count: `6 Events (4 obs · 1 action · 1 sowing)`.
+   - Note that Field Health is dynamically derived: with the 2 Sep lodging damage (81% severity), health is accurately shown as `19% (Significant Damage Detected)`.
 2. **Record Intervention**:
    - Tap **"Record Action"**, enter e.g. `"Organic neem spray applied"`, and save.
    - Observe it instantly appended into the living field story.
 3. **Demonstrate Record Deletion**:
    - Tap the trash icon on any record.
    - Observe the safety confirmation modal: *"Delete this observation? Deleting this record removes it from this prototype's local field history."*
-   - Tap **"Delete"** — record is safely removed from local persistence.
+   - Tap **"Delete"** — record is safely removed, and field health recalculates dynamically in real time.
 
 ---
 
