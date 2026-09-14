@@ -5,6 +5,7 @@ interface KshetraLogoProps {
   showTagline?: boolean;
   theme?: 'dark' | 'light';
   animated?: boolean;
+  className?: string;
 }
 
 export const KshetraLogo: FC<KshetraLogoProps> = ({
@@ -12,121 +13,128 @@ export const KshetraLogo: FC<KshetraLogoProps> = ({
   showTagline = false,
   theme = 'light',
   animated = false,
+  className = '',
 }) => {
-  const iconSizes = {
-    sm: 'w-7 h-7',
-    md: 'w-10 h-10',
-    lg: 'w-16 h-16',
-    hero: 'w-24 h-24',
-  };
-
-  const titleSizes = {
-    sm: 'text-base tracking-widest font-bold',
-    md: 'text-xl tracking-widest font-bold',
-    lg: 'text-3xl tracking-widest font-extrabold',
-    hero: 'text-4xl tracking-widest font-black',
-  };
-
   const isDark = theme === 'dark';
 
+  // Sizing configurations
+  const dimensions = {
+    sm: { height: 26, kWidth: 26, fontSize: 'text-lg', tagSize: 'text-[9px]' },
+    md: { height: 36, kWidth: 36, fontSize: 'text-2xl', tagSize: 'text-xs' },
+    lg: { height: 52, kWidth: 52, fontSize: 'text-4xl', tagSize: 'text-sm' },
+    hero: { height: 72, kWidth: 72, fontSize: 'text-5xl sm:text-6xl', tagSize: 'text-sm sm:text-base' },
+  };
+
+  const currentDim = dimensions[size];
+  const stemFill = isDark ? '#F5F2EA' : '#0C2518';
+
   return (
-    <div className="flex flex-col items-center select-none text-center">
-      <div className="flex items-center gap-3">
-        {/* Brand Emblem */}
-        <div className={`relative flex items-center justify-center shrink-0 ${animated ? 'animate-subtle-pulse' : ''}`}>
+    <div className={`flex flex-col select-none ${className}`}>
+      {/* Main Logo Row: Leaf-K emblem + SHETRA wordmark */}
+      <div className="flex items-center gap-1">
+        {/* The Exact "Leaf-K" Emblem */}
+        <div className={`shrink-0 ${animated ? 'animate-subtle-pulse' : ''}`} style={{ width: currentDim.kWidth, height: currentDim.height }}>
           <svg
-            className={`${iconSizes[size]} transition-transform duration-300`}
-            viewBox="0 0 64 64"
+            viewBox="0 0 100 100"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
+            className="w-full h-full overflow-visible"
           >
-            {/* Background pill */}
-            <rect width="64" height="64" rx="16" fill={isDark ? '#08170F' : '#0C2518'} />
-            
-            {/* Field Furrows / Contours */}
-            <path
-              d="M12 48 C 24 42, 40 42, 52 48"
-              stroke="#2E7D32"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              opacity="0.75"
-            />
-            <path
-              d="M16 54 C 26 49, 38 49, 48 54"
-              stroke="#8D6E63"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              opacity="0.85"
+            <defs>
+              {/* Leaf Gradient: Vibrant natural green to deeper forest green */}
+              <linearGradient id="leafGradTop" x1="20%" y1="90%" x2="90%" y2="10%">
+                <stop offset="0%" stop-color="#2E7D32" />
+                <stop offset="50%" stop-color="#43A047" />
+                <stop offset="100%" stop-color="#76FF03" />
+              </linearGradient>
+              <linearGradient id="leafGradBottom" x1="15%" y1="15%" x2="85%" y2="85%">
+                <stop offset="0%" stop-color="#1B5E20" />
+                <stop offset="45%" stop-color="#388E3C" />
+                <stop offset="100%" stop-color="#66BB6A" />
+              </linearGradient>
+              <filter id="leafShadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.3" />
+              </filter>
+            </defs>
+
+            {/* 1. Left Vertical Stem of the K */}
+            <rect
+              x="10"
+              y="10"
+              width="18"
+              height="80"
+              rx="3.5"
+              fill={stemFill}
             />
 
-            {/* Sacred Field / Leaf Silhouette */}
-            <path
-              d="M32 9 C 32 9, 49 18, 49 33 C 49 45, 34 51, 32 51 C 30 51, 15 45, 15 33 C 15 18, 32 9, 32 9 Z"
-              fill={isDark ? '#0E2E1D' : '#143823'}
-              stroke="#4CAF50"
-              strokeWidth="2"
-            />
+            {/* 2. Upper Diagonal Arm = Botanical Leaf pointing Up-Right */}
+            <g filter="url(#leafShadow)">
+              {/* Leaf Body */}
+              <path
+                d="M 28 48 C 30 32, 45 16, 88 12 C 84 32, 68 52, 34 53 Z"
+                fill="url(#leafGradTop)"
+              />
+              {/* Central Vein */}
+              <path
+                d="M 30 50 Q 52 32 88 12"
+                stroke="#C8E6C9"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {/* Lateral Veins */}
+              <path d="M 45 38 Q 48 30 55 27" stroke="#A5D6A7" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
+              <path d="M 57 29 Q 62 21 70 19" stroke="#A5D6A7" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
+              <path d="M 69 21 Q 74 15 80 14" stroke="#A5D6A7" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.85" />
+              <path d="M 48 41 Q 54 44 60 41" stroke="#388E3C" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.7" />
+              <path d="M 61 32 Q 67 36 74 32" stroke="#388E3C" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.7" />
+            </g>
 
-            {/* Central Continuity Spine (Evidence Line) */}
-            <path
-              d="M32 14 L 32 47"
-              stroke="#81C784"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            />
-            <path
-              d="M32 23 C 38 21, 42 23, 44 26"
-              stroke="#81C784"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M32 30 C 26 28, 22 30, 20 33"
-              stroke="#81C784"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M32 38 C 38 36, 42 38, 43 41"
-              stroke="#81C784"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-
-            {/* Seed of Truth / Integrity Apex */}
-            <circle cx="32" cy="14" r="2.8" fill="#FBF9F4" />
+            {/* 3. Lower Diagonal Arm = Botanical Leaf pointing Down-Right */}
+            <g filter="url(#leafShadow)">
+              {/* Leaf Body */}
+              <path
+                d="M 32 46 C 44 48, 62 60, 78 88 C 55 88, 38 78, 28 54 Z"
+                fill="url(#leafGradBottom)"
+              />
+              {/* Central Vein */}
+              <path
+                d="M 31 48 Q 50 66 78 88"
+                stroke="#A5D6A7"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {/* Lateral Veins */}
+              <path d="M 42 58 Q 44 67 48 72" stroke="#81C784" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
+              <path d="M 52 68 Q 56 77 62 81" stroke="#81C784" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.85" />
+              <path d="M 46 54 Q 54 55 60 59" stroke="#1B5E20" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.7" />
+              <path d="M 57 63 Q 66 65 72 70" stroke="#1B5E20" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.7" />
+            </g>
           </svg>
         </div>
 
-        {/* Wordmark */}
-        <div className="text-left">
-          <span
-            className={`${titleSizes[size]} ${
-              isDark ? 'text-[#FBF9F4]' : 'text-[#0C2518]'
-            } uppercase font-serif`}
-            style={{ letterSpacing: '0.18em' }}
-          >
-            Kshetra
-          </span>
-          {size !== 'sm' && (
-            <div className={`text-[10px] tracking-wider uppercase font-medium ${
-              isDark ? 'text-[#81C784]' : 'text-[#2E7D32]'
-            }`}>
-              Field Intelligence
-            </div>
-          )}
-        </div>
+        {/* The Wordmark: SHETRA */}
+        <span
+          className={`${currentDim.fontSize} font-black tracking-wider uppercase font-sans ${
+            isDark ? 'text-[#F5F2EA]' : 'text-[#0C2518]'
+          }`}
+          style={{ letterSpacing: '0.04em', lineHeight: 1 }}
+        >
+          SHETRA
+        </span>
       </div>
 
+      {/* The Exact Tagline: "The Field That Remembers" */}
       {showTagline && (
-        <p
-          className={`mt-2 text-xs md:text-sm font-semibold tracking-widest uppercase ${
-            isDark ? 'text-[#D7E3DA]' : 'text-[#2D4536]'
-          }`}
-          style={{ letterSpacing: '0.24em' }}
-        >
-          The Field That Remembers
-        </p>
+        <div className={`mt-1 font-sans font-medium tracking-tight ${currentDim.tagSize}`}>
+          <span className={isDark ? 'text-[#EDE8DC]' : 'text-[#2D1E16]'}>
+            The Field That{' '}
+          </span>
+          <span className="text-[#4CAF50] font-bold">
+            Remembers
+          </span>
+        </div>
       )}
     </div>
   );
