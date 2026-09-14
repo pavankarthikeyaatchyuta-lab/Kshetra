@@ -318,7 +318,7 @@ export const EvidenceScreen: FC<EvidenceScreenProps> = ({
 
             <div className="flex items-center justify-between">
               <span className="text-[#6D4C41] flex items-center gap-1">
-                <Activity className="w-3 h-3 text-[#2E7D32]" /> Sensor Context:
+                <Activity className="w-3 h-3 text-[#2E7D32]" /> Motion Context:
               </span>
               <span className="font-mono text-[11px] text-[#1A221D]">
                 {activePackage.metadata.sensorContext.stability}
@@ -335,7 +335,7 @@ export const EvidenceScreen: FC<EvidenceScreenProps> = ({
             </div>
           </div>
 
-          {/* 3D Cryptographic Evidence Vault Monolith */}
+          {/* SHA-256 Cryptographic Integrity Visualization */}
           <div className="rounded-2xl overflow-hidden shadow-lg border border-emerald-950/80">
             <Cryptographic3DBlock
               hash={activePackage.currentHash}

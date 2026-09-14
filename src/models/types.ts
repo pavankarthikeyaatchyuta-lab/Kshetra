@@ -40,7 +40,7 @@ export interface Observation {
     stability?: string;
   };
   source: 'camera' | 'gallery' | 'demo';
-  integrityStatus: 'none' | 'sealed' | 'tampered';
+  integrityStatus: 'none' | 'sealed' | 'tampered' | 'recorded';
   hash?: string;
   isDemo?: boolean;
 }

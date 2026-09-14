@@ -1,8 +1,7 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { MapPin, Plus, Minus, Layers, Maximize2, Sparkles } from 'lucide-react';
+import { MapPin, Plus, Minus, Layers, Maximize2 } from 'lucide-react';
 import type { Field } from '../../models/types';
-import { Cadastral3DViewer } from './Cadastral3DViewer';
 
 interface CadastralMapProps {
   field: Field;
@@ -15,7 +14,6 @@ export const CadastralMap: FC<CadastralMapProps> = ({
   onUseMyLocation,
   isLocating,
 }) => {
-  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [zoomLevel, setZoomLevel] = useState(16);
   const [mapLayer, setMapLayer] = useState<'satellite' | 'terrain'>('satellite');
   const [isFullscreenModalOpen, setIsFullscreenModalOpen] = useState(false);
@@ -33,66 +31,32 @@ export const CadastralMap: FC<CadastralMapProps> = ({
 
   return (
     <div className="bg-white rounded-2xl p-5 border border-[#EAE4D5] shadow-xs flex flex-col justify-between space-y-3">
-      {/* Header with 2D / 3D Mode Switcher */}
+      {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE1]">
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 text-[#2E7D32]" />
           <h3 className="text-xs font-bold text-[#0C2518]">
-            Field Cadastral Twin
+            Field Cadastral Boundaries
           </h3>
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* 2D vs 3D Switcher */}
-          <div className="flex bg-[#F5F2EA] p-0.5 rounded-lg border border-[#EAE4D5] text-[10px] font-bold">
-            <button
-              onClick={() => setViewMode('2d')}
-              className={`px-2 py-0.5 rounded-md transition-all ${
-                viewMode === '2d'
-                  ? 'bg-white text-[#0C2518] shadow-xs'
-                  : 'text-[#6D4C41] hover:text-[#0C2518]'
-              }`}
-            >
-              2D Map
-            </button>
-            <button
-              onClick={() => setViewMode('3d')}
-              className={`px-2 py-0.5 rounded-md transition-all flex items-center gap-1 ${
-                viewMode === '3d'
-                  ? 'bg-[#0C2518] text-[#76FF03] shadow-xs'
-                  : 'text-[#6D4C41] hover:text-[#0C2518]'
-              }`}
-            >
-              <Sparkles className="w-2.5 h-2.5" />
-              <span>3D Twin</span>
-            </button>
-          </div>
-
-          <button
-            onClick={() => setIsFullscreenModalOpen(true)}
-            className="text-[11px] font-semibold text-[#2E7D32] hover:underline flex items-center gap-1 ml-1"
-          >
-            <span>View Larger</span>
-            <Maximize2 className="w-3 h-3" />
-          </button>
-        </div>
+        <button
+          onClick={() => setIsFullscreenModalOpen(true)}
+          className="text-[11px] font-semibold text-[#2E7D32] hover:underline flex items-center gap-1 cursor-pointer"
+        >
+          <span>View Larger</span>
+          <Maximize2 className="w-3 h-3" />
+        </button>
       </div>
 
-      {/* Main Map / 3D Canvas Area */}
-      {viewMode === '3d' ? (
-        <Cadastral3DViewer
-          field={field}
-          onToggleFullscreen={() => setIsFullscreenModalOpen(true)}
+      {/* Main Map: Satellite Imagery with Cadastral Boundary Polygon */}
+      <div className="relative aspect-16/10 rounded-xl overflow-hidden border border-[#DED5C0] shadow-inner bg-[#1A3018]">
+        <img
+          src="/satellite-field.svg"
+          alt="Field Cadastral Satellite Map"
+          className="w-full h-full object-cover transition-transform duration-300"
+          style={{ transform: `scale(${zoomLevel / 16})` }}
         />
-      ) : (
-        /* Satellite Imagery with Cadastral Boundary Polygon */
-        <div className="relative aspect-16/10 rounded-xl overflow-hidden border border-[#DED5C0] shadow-inner bg-[#1A3018]">
-          <img
-            src="/satellite-field.svg"
-            alt="Field Cadastral Satellite Map"
-            className="w-full h-full object-cover transition-transform duration-300"
-            style={{ transform: `scale(${zoomLevel / 16})` }}
-          />
 
         {/* Map Zoom Controls on Left */}
         <div className="absolute top-3 left-3 flex flex-col gap-1 bg-white/90 backdrop-blur-xs rounded-lg border border-[#DED5C0] shadow-xs overflow-hidden">
@@ -131,7 +95,6 @@ export const CadastralMap: FC<CadastralMapProps> = ({
           PARCEL {field.id}
         </div>
       </div>
-      )}
 
       {/* Bottom Coordinates & Capture Prompt Box */}
       <div className="p-3 rounded-xl bg-[#FBF9F4] border border-[#EAE4D5] space-y-2.5">
@@ -183,43 +146,24 @@ export const CadastralMap: FC<CadastralMapProps> = ({
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-[#76FF03]" />
                 <h2 className="text-sm font-bold text-white">
-                  Cadastral 3D Digital Twin — Parcel {field.id} ({field.crop})
+                  Cadastral High-Precision Boundary — Parcel {field.id} ({field.crop})
                 </h2>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex bg-[#06140B] p-0.5 rounded-lg border border-emerald-800 text-[10px] font-bold">
-                  <button
-                    onClick={() => setViewMode('2d')}
-                    className={`px-2.5 py-1 rounded-md transition-all ${
-                      viewMode === '2d' ? 'bg-emerald-700 text-white' : 'text-emerald-300/70 hover:text-white'
-                    }`}
-                  >
-                    2D
-                  </button>
-                  <button
-                    onClick={() => setViewMode('3d')}
-                    className={`px-2.5 py-1 rounded-md transition-all ${
-                      viewMode === '3d' ? 'bg-emerald-600 text-white shadow-xs' : 'text-emerald-300/70 hover:text-white'
-                    }`}
-                  >
-                    3D Twin
-                  </button>
-                </div>
-                <button
-                  onClick={() => setIsFullscreenModalOpen(false)}
-                  className="text-xs font-bold text-emerald-300/80 hover:text-white p-1 ml-2"
-                >
-                  ✕ Close
-                </button>
-              </div>
+              <button
+                onClick={() => setIsFullscreenModalOpen(false)}
+                className="text-xs font-bold text-emerald-300/80 hover:text-white px-3 py-1 bg-emerald-900/50 rounded-lg border border-emerald-700/50"
+              >
+                ✕ Close
+              </button>
             </div>
 
-            <div className="flex-1 min-h-[480px] rounded-2xl overflow-hidden border border-emerald-900/80">
-              {viewMode === '3d' ? (
-                <Cadastral3DViewer field={field} isFullscreen={true} />
-              ) : (
-                <img src="/satellite-field.svg" alt="" className="w-full h-full object-cover" />
-              )}
+            <div className="flex-1 min-h-[480px] rounded-2xl overflow-hidden border border-emerald-900/80 relative">
+              <img src="/satellite-field.svg" alt="Cadastral Boundary" className="w-full h-full object-cover" />
+              <div className="absolute top-4 left-4 bg-black/75 backdrop-blur-xs p-3 rounded-xl border border-emerald-500/30 text-xs text-white space-y-1">
+                <div className="font-bold text-emerald-400">Survey Peg Coordinates (WGS84)</div>
+                <div className="font-mono text-[11px] text-gray-300">Lat: {latStr} · Lng: {lngStr}</div>
+                <div className="font-mono text-[11px] text-gray-300">Accuracy: {accStr} · Geofenced Zone A</div>
+              </div>
             </div>
           </div>
         </div>

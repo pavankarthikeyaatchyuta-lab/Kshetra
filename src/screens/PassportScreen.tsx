@@ -7,13 +7,13 @@ import {
   MapPin, 
   Trash2, 
   Plus, 
-  Lock, 
   AlertCircle,
   FileCheck,
   Calendar,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Check
 } from 'lucide-react';
 
 interface PassportScreenProps {
@@ -58,6 +58,21 @@ export const PassportScreen: FC<PassportScreenProps> = ({
     | { type: 'sowing'; date: Date };
 
   const sowingDate = new Date(field.createdAt || '2026-06-12T07:30:00Z');
+
+  // Sort observations newest first for dynamic last scan and health
+  const sortedObs = [...observations].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  const latestObs = sortedObs[0];
+
+  const formatLastScan = (dateStr?: string) => {
+    if (!dateStr) return 'None';
+    const scanDate = new Date(dateStr);
+    const now = new Date();
+    const diffHours = (now.getTime() - scanDate.getTime()) / (1000 * 60 * 60);
+    if (diffHours < 2) return 'Just now';
+    if (diffHours < 24) return 'Today';
+    return scanDate.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+  const lastScanDisplay = formatLastScan(latestObs?.timestamp);
 
   const timelineItems: TimelineItem[] = [
     { type: 'sowing' as const, date: sowingDate },
@@ -136,10 +151,8 @@ export const PassportScreen: FC<PassportScreenProps> = ({
           </div>
           <div>
             <div className="text-[10px] text-[#6D4C41] uppercase">{t.lastScan}</div>
-            <div className="font-medium text-xs text-[#2D1E16]">
-              {observations.length > 0
-                ? new Date(observations[0].timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-                : 'None'}
+            <div className="font-semibold text-xs text-[#0C2518]">
+              {lastScanDisplay}
             </div>
           </div>
         </div>
@@ -151,7 +164,7 @@ export const PassportScreen: FC<PassportScreenProps> = ({
               setSelectedObsForIntervention(undefined);
               setIsInterventionModalOpen(true);
             }}
-            className="w-full py-2 px-3 rounded-xl bg-[#F5F2EA] hover:bg-[#EAE4D5] text-[#123824] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors active:scale-98"
+            className="w-full py-2 px-3 rounded-xl bg-[#F5F2EA] hover:bg-[#EAE4D5] text-[#123824] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors active:scale-98 cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5 text-[#2E7D32]" />
             <span>{t.recordAction}</span>
@@ -165,7 +178,7 @@ export const PassportScreen: FC<PassportScreenProps> = ({
           {t.timelineTitle}
         </h2>
         <span className="text-xs font-mono text-[#6D4C41]">
-          {timelineItems.length} Events
+          {timelineItems.length} Events ({observations.length} obs · {interventions.length} action · 1 sowing)
         </span>
       </div>
 
@@ -286,14 +299,12 @@ export const PassportScreen: FC<PassportScreenProps> = ({
                     )}
                   </div>
 
-                  {/* Three-dot delete trigger */}
+                  {/* Recorded Status Badge */}
                   <div className="flex items-center gap-1">
-                    {obs.integrityStatus === 'sealed' && (
-                      <span className="flex items-center gap-1 text-[10px] text-[#2E7D32] font-semibold bg-[#E8F5E9] px-2 py-0.5 rounded-md">
-                        <Lock className="w-2.5 h-2.5" />
-                        <span>Sealed</span>
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1 text-[10px] text-[#2E7D32] font-semibold bg-[#E8F5E9] px-2 py-0.5 rounded-md">
+                      <Check className="w-2.5 h-2.5" />
+                      <span>Recorded</span>
+                    </span>
 
                     <button
                       onClick={() => setDeletingObsId(obs.id)}

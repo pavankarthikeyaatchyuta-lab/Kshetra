@@ -23,30 +23,52 @@ export const INITIAL_FIELD: Field = {
   isDemo: true,
 };
 
-// Seed demo timeline observations - explicitly labelled as DEMO
+// Seed demo timeline observations - explicitly labelled as DEMO (ordered newest first)
 export const INITIAL_OBSERVATIONS: Observation[] = [
   {
-    id: 'obs-demo-1',
+    id: 'obs-demo-4',
     fieldId: 'KR-1042',
-    timestamp: '2026-06-18T09:15:00Z',
-    photoUrl: '/sample-healthy.svg',
+    timestamp: '2026-09-02T16:10:00Z',
+    photoUrl: '/sample-storm.svg',
     crop: 'Paddy',
-    condition: 'Healthy Baseline — Optimal Vegetative',
-    severity: 6,
-    confidence: 94,
+    condition: 'Lodging Damage — Severe Weather Event',
+    severity: 81,
+    confidence: 97,
     observations: [
-      'Uniform green canopy throughout active tillering.',
-      'No foliar spotting or insect punctures detected.',
-      'Optimal leaf transpiration and leaf collar integrity.',
+      'Substantial physical lodging observed across western quadrant.',
+      'Bent stem bases with standing rainwater ponding.',
+      'Grain panicles submerged at soil-water boundary.',
     ],
     guidance: [
-      'Maintain standard scheduled baseline irrigation.',
-      'Proceed with scheduled fertilizer schedule.',
+      'Immediate field drainage required to prevent premature sprouting.',
+      'Generate sealed Evidence Package for crop loss documentation.',
     ],
     location: 'Demo field',
     source: 'demo',
-    integrityStatus: 'sealed',
-    hash: '6a8e412f8d394b00a5d4301c902ffcb67e3a992e5912448ca3318f72c0199d7a',
+    integrityStatus: 'recorded',
+    isDemo: true,
+  },
+  {
+    id: 'obs-demo-3',
+    fieldId: 'KR-1042',
+    timestamp: '2026-07-28T08:20:00Z',
+    photoUrl: '/sample-healthy.svg',
+    crop: 'Paddy',
+    condition: 'Recovery Progress — Leaf Flattening',
+    severity: 6,
+    confidence: 95,
+    observations: [
+      'Fresh upper canopy growth showing smooth leaf unfurling.',
+      'Chlorotic discoloration resolved on 88% of tagged plants.',
+      'Tillering density stabilized.',
+    ],
+    guidance: [
+      'Return to scheduled maintenance monitoring.',
+      'Next passport scan recommended in 7 days.',
+    ],
+    location: 'Demo field',
+    source: 'demo',
+    integrityStatus: 'recorded',
     isDemo: true,
   },
   {
@@ -70,56 +92,30 @@ export const INITIAL_OBSERVATIONS: Observation[] = [
     ],
     location: 'Demo field',
     source: 'demo',
-    integrityStatus: 'sealed',
-    hash: '4b79c3f19e7a20c3a8e945511b0e334a17df98cb288102941ec59aa71e98d912',
+    integrityStatus: 'recorded',
     isDemo: true,
   },
   {
-    id: 'obs-demo-3',
+    id: 'obs-demo-1',
     fieldId: 'KR-1042',
-    timestamp: '2026-07-28T08:20:00Z',
+    timestamp: '2026-06-18T09:15:00Z',
     photoUrl: '/sample-healthy.svg',
     crop: 'Paddy',
-    condition: 'Recovery Progress — Leaf Flattening',
+    condition: 'Healthy Baseline — Optimal Vegetative',
     severity: 6,
-    confidence: 95,
+    confidence: 94,
     observations: [
-      'Fresh upper canopy growth showing smooth leaf unfurling.',
-      'Chlorotic discoloration resolved on 88% of tagged plants.',
-      'Tillering density stabilized.',
+      'Uniform green canopy throughout active tillering.',
+      'No foliar spotting or insect punctures detected.',
+      'Optimal leaf transpiration and leaf collar integrity.',
     ],
     guidance: [
-      'Return to scheduled maintenance monitoring.',
-      'Next passport scan recommended in 7 days.',
+      'Maintain standard scheduled baseline irrigation.',
+      'Proceed with scheduled fertilizer schedule.',
     ],
     location: 'Demo field',
     source: 'demo',
-    integrityStatus: 'sealed',
-    hash: '93e11a2f64c8d50b4c7811902ae45db9c011945f8e67a9143890bbce88147d33',
-    isDemo: true,
-  },
-  {
-    id: 'obs-demo-4',
-    fieldId: 'KR-1042',
-    timestamp: '2026-09-02T16:10:00Z',
-    photoUrl: '/sample-storm.svg',
-    crop: 'Paddy',
-    condition: 'Lodging Damage — Severe Weather Event',
-    severity: 81,
-    confidence: 97,
-    observations: [
-      'Substantial physical lodging observed across western quadrant.',
-      'Bent stem bases with standing rainwater ponding.',
-      'Grain panicles submerged at soil-water boundary.',
-    ],
-    guidance: [
-      'Immediate field drainage required to prevent premature sprouting.',
-      'Generate sealed Evidence Package for crop loss documentation.',
-    ],
-    location: 'Demo field',
-    source: 'demo',
-    integrityStatus: 'sealed',
-    hash: 'e82b79a1f9450c2311894a73ef59da201884bbec4210984cfb92e7aa3418ef09',
+    integrityStatus: 'recorded',
     isDemo: true,
   },
 ];
@@ -146,7 +142,7 @@ export async function createInitialEvidencePackage(): Promise<EvidencePackage> {
     location: 'Demo field',
     photosCount: 2,
     sensorContext: {
-      stability: 'Device in Hand',
+      stability: 'Device Stable (Captured)',
       motionDetected: true,
       hardwareProvider: 'Browser DeviceMotion API',
     },
@@ -167,7 +163,7 @@ export async function createInitialEvidencePackage(): Promise<EvidencePackage> {
       sensorContext: {
         deviceMotion: 'Detected',
         orientation: 'Portrait',
-        stability: 'Device in Hand',
+        stability: 'Device Stable (Captured)',
         hardwareProvider: 'Browser DeviceMotion API',
       },
       deviceContext: 'Mobile Web Browser / CameraX Candidate',
@@ -209,13 +205,14 @@ export function saveField(field: Field): void {
 }
 
 export function getSavedObservations(): Observation[] {
+  let list = INITIAL_OBSERVATIONS;
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.OBSERVATIONS);
-    if (raw) return JSON.parse(raw);
+    if (raw) list = JSON.parse(raw);
   } catch {
     // ignore
   }
-  return INITIAL_OBSERVATIONS;
+  return [...list].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
 
 export function saveObservations(obs: Observation[]): void {

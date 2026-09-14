@@ -304,7 +304,7 @@ export const Cryptographic3DBlock: FC<Cryptographic3DBlockProps> = ({
             <>
               <ShieldCheck className="w-3.5 h-3.5 text-[#76FF03]" />
               <span className="text-[10px] font-mono font-bold tracking-wider uppercase">
-                3D CRYPTO VAULT • SHA-256 SEALED
+                SHA-256 INTEGRITY • WEB CRYPTO API
               </span>
             </>
           )}

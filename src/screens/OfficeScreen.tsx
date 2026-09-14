@@ -9,7 +9,8 @@ import {
   CheckCircle2, 
   XCircle, 
   Database, 
-  Lock 
+  Lock,
+  AlertTriangle 
 } from 'lucide-react';
 
 interface OfficeScreenProps {
@@ -29,6 +30,8 @@ export const OfficeScreen: FC<OfficeScreenProps> = ({
 }) => {
   const t = translations[language];
   const [activeTab, setActiveTab] = useState<'overview' | 'fields' | 'evidence' | 'activity'>('overview');
+
+  const hasTampered = evidencePackages.some(pkg => pkg.verificationStatus === 'mismatch' || pkg.isTampered);
 
   return (
     <div className="min-h-screen bg-[#F5F2EA] text-[#1A221D] flex flex-col">
@@ -122,11 +125,23 @@ export const OfficeScreen: FC<OfficeScreenProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <div className="px-3 py-1.5 rounded-xl bg-[#E8F5E9] text-[#2E7D32] text-xs font-bold flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Passport Verified</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="px-3 py-1.5 rounded-xl bg-[#E8F5E9] text-[#2E7D32] text-xs font-semibold flex items-center gap-1.5 border border-[#C8E6C9]">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#2E7D32]" />
+                    <span>Field Passport: Active</span>
                   </div>
+
+                  {hasTampered ? (
+                    <div className="px-3 py-1.5 rounded-xl bg-[#FFF3E0] text-[#E65100] text-xs font-bold flex items-center gap-1.5 border border-[#FFE0B2]">
+                      <AlertTriangle className="w-3.5 h-3.5 text-[#E65100]" />
+                      <span>Integrity Issue Detected</span>
+                    </div>
+                  ) : (
+                    <div className="px-3 py-1.5 rounded-xl bg-[#E8F5E9] text-[#2E7D32] text-xs font-bold flex items-center gap-1.5 border border-[#C8E6C9]">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#2E7D32]" />
+                      <span>Evidence Verified</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -143,13 +158,15 @@ export const OfficeScreen: FC<OfficeScreenProps> = ({
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#FBF9F4] border border-[#EAE4D5]">
-                  <div className="text-[10px] text-[#6D4C41] uppercase font-semibold">Total Observations</div>
+                  <div className="text-[10px] text-[#6D4C41] uppercase font-semibold">Field Observations</div>
                   <div className="text-sm font-bold text-[#0C2518] mt-0.5">{observations.length} Recorded</div>
+                  <div className="text-[10px] text-[#8D6E63] mt-0.5">Part of {observations.length + 1 + evidencePackages.length} Total Events</div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-[#FBF9F4] border border-[#EAE4D5]">
                   <div className="text-[10px] text-[#6D4C41] uppercase font-semibold">Evidence Packages</div>
                   <div className="text-sm font-bold text-[#0C2518] mt-0.5">{evidencePackages.length} Sealed</div>
+                  <div className="text-[10px] text-[#8D6E63] mt-0.5">SHA-256 Verified</div>
                 </div>
               </div>
             </div>

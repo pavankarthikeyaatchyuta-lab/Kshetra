@@ -43,6 +43,18 @@ export const HomeScreen: FC<HomeScreenProps> = ({
   const [isLocating, setIsLocating] = useState(false);
   const [activeMenuObsId, setActiveMenuObsId] = useState<string | null>(null);
 
+  // Dynamic metrics derived from latest observations
+  const latestObs = observations.length > 0 ? observations[0] : null;
+  const healthScore = latestObs ? Math.max(5, 100 - latestObs.severity) : 95;
+  const healthStatus = 
+    healthScore >= 80 ? 'Optimal' :
+    healthScore >= 50 ? 'Moderate Alert' :
+    'Significant Damage Detected';
+    
+  const lastScanned = latestObs 
+    ? new Date(latestObs.timestamp).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
+    : 'No scans yet';
+
   // Time-of-day greeting
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -215,10 +227,11 @@ export const HomeScreen: FC<HomeScreenProps> = ({
       {/* 3. Middle Metrics Row: Current Field Health + Weather & Field Conditions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <HealthSummaryCard
-          score={86}
-          statusText="Good"
-          lastScanned="2 days ago"
+          score={healthScore}
+          statusText={healthStatus}
+          lastScanned={lastScanned}
           nextScan="In 5 days"
+          eventSeverity={latestObs?.severity}
         />
 
         <WeatherCard
@@ -236,10 +249,10 @@ export const HomeScreen: FC<HomeScreenProps> = ({
           <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE1]">
             <div>
               <h3 className="text-xs font-bold text-[#0C2518]">
-                Field Story
+                Field Story ({observations.length} Observations · {observations.length + 2} Events)
               </h3>
               <p className="text-[10px] text-[#6D4C41]">
-                A timeline of what your field has experienced.
+                A chronological ledger of what your field has experienced.
               </p>
             </div>
             <button
