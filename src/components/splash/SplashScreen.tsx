@@ -43,9 +43,15 @@ export const SplashScreen: FC<SplashScreenProps> = ({ onComplete }) => {
         backgroundImage: 'radial-gradient(ellipse at 50% 40%, #153A26 0%, #0C2518 70%, #06150D 100%)',
       }}
     >
-      {/* Top subtle indicator */}
-      <div className="pt-6 text-[11px] tracking-widest text-[#81C784]/60 uppercase font-mono">
-        Offline-First System · v2.0
+      {/* Top Demo Disclaimer */}
+      <div className="pt-6 flex flex-col items-center gap-1.5">
+        <div className="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 font-mono text-xs font-black uppercase tracking-widest flex items-center gap-2 shadow-lg animate-pulse">
+          <span className="w-2 h-2 rounded-full bg-amber-400" />
+          <span>FOR DEMO PURPOSES ONLY</span>
+        </div>
+        <div className="text-[10px] font-mono tracking-widest text-[#81C784]/60 uppercase">
+          Offline-First Field Intelligence · Evaluation Prototype
+        </div>
       </div>
 
       {/* Center Brand Identity */}
@@ -62,12 +68,15 @@ export const SplashScreen: FC<SplashScreenProps> = ({ onComplete }) => {
       </div>
 
       {/* Bottom status & prompt */}
-      <div className="pb-8 flex flex-col items-center gap-2">
+      <div className="pb-8 flex flex-col items-center gap-2 text-center max-w-sm">
+        <div className="px-3 py-1 rounded-lg bg-black/40 border border-amber-500/30 text-amber-200/90 text-[11px] font-mono">
+          Interactive Demo — Synthetic Crop Diagnostics & Telemetry
+        </div>
         <p className="text-xs text-[#A5D6A7] font-medium tracking-wide">
           {statusText}
         </p>
         <span className="text-[10px] text-[#81C784]/40 tracking-wider">
-          Tap anywhere to skip
+          Tap anywhere to continue
         </span>
       </div>
     </div>

@@ -296,6 +296,19 @@ export const ScanScreen: FC<ScanScreenProps> = ({
         </div>
       </div>
 
+      {/* Demo Purpose Bar in Viewfinder */}
+      <div className="relative z-10 mx-4 -mt-1 mb-2 px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/40 backdrop-blur-md flex items-center justify-between text-amber-300">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span className="text-[10px] font-mono font-bold tracking-wider uppercase">
+            FOR DEMO PURPOSES ONLY
+          </span>
+        </div>
+        <span className="text-[10px] font-mono text-amber-200/80">
+          Synthetic Diagnostics Sandbox
+        </span>
+      </div>
+
       {/* Main Viewport Content based on ScanState */}
       <div className="relative flex-1 flex flex-col items-center justify-center overflow-hidden px-4">
         {scanState === 'ready' && (

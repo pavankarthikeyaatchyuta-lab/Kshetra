@@ -72,8 +72,8 @@ export const HomeScreen: FC<HomeScreenProps> = ({
 
   return (
     <div className="space-y-6 pb-20 pt-2 px-4 sm:px-6 max-w-7xl mx-auto">
-      {/* 1. Header Greeting */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+      {/* 1. Header Greeting & Demo Notice */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0C2518]">
             {getGreeting()}
@@ -82,6 +82,29 @@ export const HomeScreen: FC<HomeScreenProps> = ({
             Field intelligence at a glance.
           </p>
         </div>
+
+        {/* Prominent Dashboard Demo Notice Pill */}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#FFF8E1] border border-[#FFE082] shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-[#FF8F00] animate-pulse" />
+          <span className="text-xs font-mono font-black text-[#E65100] uppercase tracking-wider">
+            FOR DEMO PURPOSES ONLY
+          </span>
+        </div>
+      </div>
+
+      {/* Dashboard Demo Purpose Notice Box */}
+      <div className="rounded-2xl p-3.5 bg-linear-to-r from-[#FFF8E1] via-[#FFF3E0] to-[#FFF8E1] border border-[#FFE082] shadow-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="px-2.5 py-1 rounded-lg bg-[#E65100] text-white font-mono font-black text-[10px] tracking-wider uppercase shrink-0 shadow-2xs">
+            DEMO ENVIRONMENT
+          </span>
+          <p className="text-xs text-[#5D4037] font-medium">
+            This dashboard displays simulated parcel telemetry, sensor feeds, and AI disease detections strictly for demonstration purposes.
+          </p>
+        </div>
+        <span className="hidden sm:inline font-mono text-[10px] font-bold text-[#E65100] bg-white px-2.5 py-1 rounded-full border border-[#FFE082] shrink-0">
+          PROTOTYPE v2.4
+        </span>
       </div>
 
       {/* 2. Top Hero Grid: Active Field Banner + 4 Quick Actions */}
@@ -115,11 +138,9 @@ export const HomeScreen: FC<HomeScreenProps> = ({
                 <h2 className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-white">
                   {field.id}
                 </h2>
-                {field.isDemo && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FFF3E0] text-[#E65100]">
-                    DEMO
-                  </span>
-                )}
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-black bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
+                  FOR DEMO PURPOSES ONLY
+                </span>
               </div>
 
               {/* Field Attributes */}

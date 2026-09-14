@@ -219,9 +219,14 @@ export const EvidenceScreen: FC<EvidenceScreenProps> = ({
               {t.evidenceModeTitle}
             </h1>
           </div>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#E65100] text-white">
-            IMPORTANT EVENT
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-black bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
+              FOR DEMO PURPOSES ONLY
+            </span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#E65100] text-white">
+              IMPORTANT EVENT
+            </span>
+          </div>
         </div>
         <p className="text-xs text-[#D7E3DA] leading-relaxed pt-1">
           {t.evidencePurpose}

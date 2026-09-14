@@ -173,9 +173,25 @@ export function App() {
       {/* Main App Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#FBF9F4]">
         
+        {/* Global Persistent Demo Notice Banner (Visible on EVERY page) */}
+        <div className="bg-[#FFF8E1] border-b border-[#FFE082] px-3 sm:px-6 py-1.5 flex items-center justify-between text-[#5D4037] z-30 sticky top-0 sm:static shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-md bg-[#FF8F00] text-white font-mono font-black text-[9px] sm:text-[10px] tracking-wider uppercase shadow-2xs">
+              FOR DEMO PURPOSES ONLY
+            </span>
+            <span className="text-[11px] sm:text-xs font-semibold text-[#6D4C41]">
+              <span className="hidden md:inline">Interactive Field Intelligence Prototype — </span>All crop models, GPS boundaries & sensor telemetry are simulated for demonstration.
+            </span>
+          </div>
+          <span className="hidden sm:inline-flex items-center gap-1.5 font-mono text-[10px] font-bold text-[#E65100] bg-white/90 px-2 py-0.5 rounded-full border border-[#FFE082]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF8F00] animate-pulse" />
+            DEMO SANDBOX
+          </span>
+        </div>
+
         {/* Offline Notification Banner */}
         {!effectiveOnline && (
-          <div className="bg-[#FFF3E0] text-[#E65100] px-4 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-[#FFE0B2] z-40 sticky top-0">
+          <div className="bg-[#FFF3E0] text-[#E65100] px-4 py-1.5 text-xs font-semibold flex items-center justify-between border-b border-[#FFE0B2] z-40 sticky top-7 sm:top-0">
             <div className="flex items-center gap-1.5">
               <WifiOff className="w-3.5 h-3.5" />
               <span>OFFLINE · Stored on device · Sync pending</span>

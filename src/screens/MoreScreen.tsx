@@ -68,12 +68,27 @@ export const MoreScreen: FC<MoreScreenProps> = ({
   return (
     <div className="space-y-4 pb-24 pt-1 max-w-md mx-auto px-4">
       {/* Header */}
-      <div className="pt-2">
-        <h1 className="text-2xl font-bold tracking-tight text-[#0C2518]">
-          {t.settingsTitle}
-        </h1>
-        <p className="text-xs text-[#6D4C41] mt-0.5">
-          Device permissions, offline controls, and system roadmap.
+      <div className="pt-2 flex items-start justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-[#0C2518]">
+            {t.settingsTitle}
+          </h1>
+          <p className="text-xs text-[#6D4C41] mt-0.5">
+            Device permissions, offline controls, and system roadmap.
+          </p>
+        </div>
+        <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-black bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2] shrink-0">
+          FOR DEMO PURPOSES ONLY
+        </span>
+      </div>
+
+      {/* Demo Sandbox Alert Card */}
+      <div className="rounded-2xl p-3.5 bg-[#FFF8E1] border border-[#FFE082] shadow-2xs flex items-center gap-3">
+        <span className="px-2 py-0.5 rounded bg-[#E65100] text-white font-mono font-bold text-[9px] uppercase shrink-0">
+          DEMO MODE
+        </span>
+        <p className="text-xs text-[#5D4037] font-medium leading-tight">
+          Running in interactive demonstration mode. All sensor values and ledger transactions are sandbox records.
         </p>
       </div>
 

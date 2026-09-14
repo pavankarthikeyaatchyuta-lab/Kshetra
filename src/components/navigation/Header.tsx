@@ -27,9 +27,12 @@ export const Header: FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-[#FBF9F4]/95 backdrop-blur-md border-b border-[#EAE4D5] px-4 py-2.5 flex items-center justify-between transition-all">
-      {/* Brand logo */}
+      {/* Brand logo & Demo indicator */}
       <div className="flex items-center gap-2">
         <KshetraLogo size="sm" theme="light" />
+        <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
+          DEMO ONLY
+        </span>
       </div>
 
       {/* Action icons & controls */}

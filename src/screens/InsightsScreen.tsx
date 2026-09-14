@@ -34,9 +34,14 @@ export const InsightsScreen: FC<InsightsScreenProps> = ({
           </p>
         </div>
 
-        <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
-          LIVE TELEMETRY
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-1 rounded-full text-xs font-mono font-black bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
+            FOR DEMO PURPOSES ONLY
+          </span>
+          <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]">
+            LIVE TELEMETRY
+          </span>
+        </div>
       </div>
 
       {/* Top 3 Metric Cards */}

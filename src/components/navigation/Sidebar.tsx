@@ -39,9 +39,17 @@ export const Sidebar: FC<SidebarProps> = ({
   return (
     <aside className="w-64 bg-[#08180E] text-[#FBF9F4] flex flex-col justify-between p-4 border-r border-[#163824] select-none shrink-0 min-h-screen">
       {/* Top Logo Section */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="pt-2 pl-2">
           <KshetraLogo size="md" showTagline={true} theme="dark" />
+        </div>
+
+        {/* Demo Purpose Pill */}
+        <div className="mx-1 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-between">
+          <span className="text-[10px] font-mono font-bold tracking-wider text-amber-300 uppercase">
+            FOR DEMO PURPOSES ONLY
+          </span>
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
         </div>
 
         {/* Main Navigation Items */}

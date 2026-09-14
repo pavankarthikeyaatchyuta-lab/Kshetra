@@ -40,7 +40,13 @@ export const TopBar: FC<TopBarProps> = ({
       </div>
 
       {/* Right Controls & Header Artistic Motto */}
-      <div className="flex items-center gap-5 shrink-0">
+      <div className="flex items-center gap-4 shrink-0">
+        {/* Demo Purpose Pill */}
+        <span className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2] shadow-2xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#E65100] animate-pulse" />
+          FOR DEMO PURPOSES ONLY
+        </span>
+
         {/* Connection Status Pill */}
         <button
           onClick={onToggleSimulatedOffline}

@@ -43,6 +43,9 @@ export const OfficeScreen: FC<OfficeScreenProps> = ({
               <h1 className="text-base font-extrabold tracking-wider uppercase font-serif">
                 Kshetra Office
               </h1>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#FFF3E0] text-[#E65100] border border-[#FFE0B2]">
+                FOR DEMO PURPOSES ONLY
+              </span>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[#81C784]/20 text-[#81C784] border border-[#81C784]/30">
                 AUDIT & STAKEHOLDER PORTAL
               </span>
