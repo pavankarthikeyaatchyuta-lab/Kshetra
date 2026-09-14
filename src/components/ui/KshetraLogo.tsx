@@ -43,14 +43,14 @@ export const KshetraLogo: FC<KshetraLogoProps> = ({
             <defs>
               {/* Leaf Gradient: Vibrant natural green to deeper forest green */}
               <linearGradient id="leafGradTop" x1="20%" y1="90%" x2="90%" y2="10%">
-                <stop offset="0%" stop-color="#2E7D32" />
-                <stop offset="50%" stop-color="#43A047" />
-                <stop offset="100%" stop-color="#76FF03" />
+                <stop offset="0%" stopColor="#2E7D32" />
+                <stop offset="50%" stopColor="#43A047" />
+                <stop offset="100%" stopColor="#76FF03" />
               </linearGradient>
               <linearGradient id="leafGradBottom" x1="15%" y1="15%" x2="85%" y2="85%">
-                <stop offset="0%" stop-color="#1B5E20" />
-                <stop offset="45%" stop-color="#388E3C" />
-                <stop offset="100%" stop-color="#66BB6A" />
+                <stop offset="0%" stopColor="#1B5E20" />
+                <stop offset="45%" stopColor="#388E3C" />
+                <stop offset="100%" stopColor="#66BB6A" />
               </linearGradient>
               <filter id="leafShadow" x="-10%" y="-10%" width="120%" height="120%">
                 <feDropShadow dx="0" dy="2" stdDeviation="2" floodOpacity="0.3" />
