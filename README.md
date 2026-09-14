@@ -1,8 +1,14 @@
-# 🌾 Kshetra — The Field That Remembers
-
 <div align="center">
 
-![Kshetra Banner](/paddy-banner.svg)
+<img src="public/paddy-banner.svg" alt="Kshetra — The Field That Remembers Banner" width="100%" />
+
+<br/><br/>
+
+<a href="#-kshetra--the-field-that-remembers">
+  <img src="public/favicon.svg" alt="Kshetra Logo" width="72" height="72" />
+</a>
+
+# Kshetra — The Field That Remembers
 
 ### *Understand. Act. Remember. Verify.*
 
@@ -15,7 +21,11 @@
 [![PWA Ready](https://img.shields.io/badge/PWA-Offline--First-FF6F00.svg)](https://web.dev/progressive-web-apps/)
 [![Languages](https://img.shields.io/badge/Languages-EN%20%7C%20%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80%20%7C%20%E0%B0%A4%E0%B1%86%E0%B0%B2%E0%B1%81%E0%B0%97%E0%B1%81-2E7D32.svg)](#-multilingual-agronomy)
 
+<br/>
+
 **Kshetra** is an offline-first agricultural intelligence system that establishes **Evidence Continuity** for farming parcels. By pairing on-device diagnostic intelligence with cryptographic integrity seals, Kshetra builds an immutable **Digital Field Passport** across every season.
+
+<br/>
 
 [Explore Demo Guide](./DEMO_GUIDE.md) · [Architecture](#-system-architecture) · [Pillars](#-the-three-pillars) · [Roadmap](#-technical-honesty--production-roadmap) · [Quick Start](#-quick-start)
 
