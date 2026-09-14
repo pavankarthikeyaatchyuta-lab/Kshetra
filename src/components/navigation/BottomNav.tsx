@@ -3,7 +3,7 @@ import { Home, Camera, ShieldCheck, ShieldAlert, MoreHorizontal } from 'lucide-r
 import type { Language } from '../../models/types';
 import { translations } from '../../services/i18n';
 
-export type TabKey = 'home' | 'scan' | 'passport' | 'evidence' | 'more';
+export type TabKey = 'home' | 'scan' | 'passport' | 'evidence' | 'more' | 'fields' | 'insights';
 
 interface BottomNavProps {
   activeTab: TabKey;

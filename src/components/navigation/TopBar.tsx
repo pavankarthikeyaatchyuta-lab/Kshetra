@@ -10,6 +10,7 @@ interface TopBarProps {
   onToggleSimulatedOffline: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
+  onOpenSettings?: () => void;
 }
 
 export const TopBar: FC<TopBarProps> = ({
@@ -20,6 +21,7 @@ export const TopBar: FC<TopBarProps> = ({
   onToggleSimulatedOffline,
   searchQuery,
   onSearchChange,
+  onOpenSettings,
 }) => {
   const effectiveOnline = isOnline && !isSimulatedOffline;
 
@@ -69,16 +71,20 @@ export const TopBar: FC<TopBarProps> = ({
           <ChevronDown className="w-3.5 h-3.5 text-[#6D4C41] absolute right-2 pointer-events-none opacity-60" />
         </div>
 
-        {/* User Profile Badge */}
-        <div className="flex items-center gap-2 pl-2 border-l border-[#DED5C0]">
-          <div className="w-8 h-8 rounded-full bg-[#1A3828] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+        {/* User Profile Badge (Clickable) */}
+        <button
+          onClick={onOpenSettings}
+          className="flex items-center gap-2 pl-2 border-l border-[#DED5C0] hover:opacity-80 transition-opacity cursor-pointer group"
+          title="Open Profile & Settings"
+        >
+          <div className="w-8 h-8 rounded-full bg-[#1A3828] group-hover:bg-[#2E7D32] text-white flex items-center justify-center font-bold text-xs shadow-xs transition-colors">
             YK
           </div>
           <div className="hidden sm:block text-left">
             <div className="text-[10px] text-[#8D6E63] leading-none">Hello,</div>
             <div className="text-xs font-bold text-[#0C2518] leading-tight">User</div>
           </div>
-        </div>
+        </button>
 
         {/* Handwritten Elegant Motto on Far Right */}
         <div className="hidden xl:block pl-3 border-l border-[#DED5C0] text-right">

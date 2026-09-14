@@ -31,6 +31,8 @@ import { PassportScreen } from './screens/PassportScreen';
 import { EvidenceScreen } from './screens/EvidenceScreen';
 import { OfficeScreen } from './screens/OfficeScreen';
 import { MoreScreen } from './screens/MoreScreen';
+import { FieldsScreen } from './screens/FieldsScreen';
+import { InsightsScreen } from './screens/InsightsScreen';
 import { WifiOff } from 'lucide-react';
 
 export function App() {
@@ -40,6 +42,8 @@ export function App() {
   const [viewMode, setViewMode] = useState<'field' | 'office'>('field');
   const [language, setLanguage] = useState<Language>('en');
   const [searchQuery, setSearchQuery] = useState('');
+  const [openInterventionOnPassport, setOpenInterventionOnPassport] = useState(false);
+  const [targetObservationId, setTargetObservationId] = useState<string | null>(null);
 
   // Network State
   const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -157,11 +161,9 @@ export function App() {
         <Sidebar
           activeTab={activeTab}
           onSelectTab={(tab) => {
-            if (tab === 'fields' || tab === 'insights') {
-              setActiveTab('passport');
-            } else {
-              setActiveTab(tab);
-            }
+            setOpenInterventionOnPassport(false);
+            setTargetObservationId(null);
+            setActiveTab(tab as TabKey);
           }}
           viewMode={viewMode}
           onToggleViewMode={() => setViewMode(viewMode === 'office' ? 'field' : 'office')}
@@ -194,6 +196,7 @@ export function App() {
             onToggleSimulatedOffline={() => setIsSimulatedOffline(!isSimulatedOffline)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            onOpenSettings={() => setActiveTab('more')}
           />
         </div>
 
@@ -228,9 +231,23 @@ export function App() {
                 field={field}
                 observations={filteredObservations}
                 onUpdateField={handleUpdateField}
-                onNavigate={setActiveTab}
+                onNavigate={(tab) => {
+                  setOpenInterventionOnPassport(false);
+                  setTargetObservationId(null);
+                  setActiveTab(tab);
+                }}
                 isOnline={effectiveOnline}
                 onDeleteObservation={handleDeleteObservation}
+                onRecordAction={() => {
+                  setOpenInterventionOnPassport(true);
+                  setTargetObservationId(null);
+                  setActiveTab('passport');
+                }}
+                onSelectObservation={(obsId) => {
+                  setOpenInterventionOnPassport(false);
+                  setTargetObservationId(obsId);
+                  setActiveTab('passport');
+                }}
               />
             )}
 
@@ -238,7 +255,10 @@ export function App() {
               <ScanScreen
                 field={field}
                 onAddObservation={handleAddObservation}
-                onRecordInterventionPrompt={() => setActiveTab('passport')}
+                onRecordInterventionPrompt={() => {
+                  setOpenInterventionOnPassport(true);
+                  setActiveTab('passport');
+                }}
                 onBack={() => setActiveTab('home')}
                 language={language}
                 isOnline={effectiveOnline}
@@ -252,9 +272,14 @@ export function App() {
                 interventions={interventions}
                 onDeleteObservation={handleDeleteObservation}
                 onDeleteIntervention={handleDeleteIntervention}
-                onAddIntervention={handleAddIntervention}
+                onAddIntervention={(int) => {
+                  handleAddIntervention(int);
+                  setOpenInterventionOnPassport(false);
+                }}
                 onNavigateToScan={() => setActiveTab('scan')}
                 language={language}
+                initialOpenIntervention={openInterventionOnPassport}
+                targetObservationId={targetObservationId}
               />
             )}
 
@@ -265,6 +290,23 @@ export function App() {
                 onSaveEvidencePackage={handleSaveEvidencePackage}
                 onUpdateEvidencePackage={handleUpdateEvidencePackage}
                 onDeleteEvidencePackage={handleDeleteEvidencePackage}
+                language={language}
+              />
+            )}
+
+            {activeTab === 'fields' && (
+              <FieldsScreen
+                currentField={field}
+                onSelectField={handleUpdateField}
+                onNavigate={(tab) => setActiveTab(tab)}
+                language={language}
+              />
+            )}
+
+            {activeTab === 'insights' && (
+              <InsightsScreen
+                field={field}
+                onNavigate={(tab) => setActiveTab(tab)}
                 language={language}
               />
             )}

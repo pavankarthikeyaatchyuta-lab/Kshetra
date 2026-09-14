@@ -23,9 +23,11 @@ interface HomeScreenProps {
   field: Field;
   observations: Observation[];
   onUpdateField: (field: Field) => void;
-  onNavigate: (tab: 'home' | 'scan' | 'passport' | 'evidence' | 'more') => void;
+  onNavigate: (tab: 'home' | 'scan' | 'passport' | 'evidence' | 'more' | 'fields' | 'insights') => void;
   isOnline: boolean;
   onDeleteObservation?: (id: string) => void;
+  onRecordAction?: () => void;
+  onSelectObservation?: (obsId: string) => void;
 }
 
 export const HomeScreen: FC<HomeScreenProps> = ({
@@ -35,6 +37,8 @@ export const HomeScreen: FC<HomeScreenProps> = ({
   onNavigate,
   isOnline,
   onDeleteObservation,
+  onRecordAction,
+  onSelectObservation,
 }) => {
   const [isLocating, setIsLocating] = useState(false);
   const [activeMenuObsId, setActiveMenuObsId] = useState<string | null>(null);
@@ -140,10 +144,17 @@ export const HomeScreen: FC<HomeScreenProps> = ({
               </div>
             </div>
 
-            {/* View on Map Button */}
+            {/* View on Map Button (Scrolls smoothly to Cadastral Map) */}
             <button
-              onClick={() => onNavigate('passport')}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-xs font-semibold text-white flex items-center gap-1.5 transition-all"
+              onClick={() => {
+                const el = document.getElementById('cadastral-map-section');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  onNavigate('fields');
+                }
+              }}
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-xs font-semibold text-white flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <MapPin className="w-3 h-3 text-[#81C784]" />
               <span>View on Map</span>
@@ -173,7 +184,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({
         <div className="lg:col-span-5 flex flex-col justify-between">
           <QuickActions
             onScanField={() => onNavigate('scan')}
-            onRecordAction={() => onNavigate('passport')}
+            onRecordAction={onRecordAction || (() => onNavigate('passport'))}
             onEvidenceMode={() => onNavigate('evidence')}
             onViewPassport={() => onNavigate('passport')}
           />
@@ -303,7 +314,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({
         </div>
 
         {/* Column 2: Field Location (Cadastral Satellite Map) (4 cols) */}
-        <div className="lg:col-span-4">
+        <div id="cadastral-map-section" className="lg:col-span-4 scroll-mt-20">
           <CadastralMap
             field={field}
             onUseMyLocation={handleUseMyLocation}
@@ -316,7 +327,13 @@ export const HomeScreen: FC<HomeScreenProps> = ({
           <RecentScansCard
             observations={observations}
             onViewAll={() => onNavigate('passport')}
-            onSelectObservation={() => onNavigate('passport')}
+            onSelectObservation={(obs) => {
+              if (onSelectObservation) {
+                onSelectObservation(obs.id);
+              } else {
+                onNavigate('passport');
+              }
+            }}
           />
 
           <SystemStatusCard

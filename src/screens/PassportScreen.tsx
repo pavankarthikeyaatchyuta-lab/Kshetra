@@ -25,6 +25,8 @@ interface PassportScreenProps {
   onAddIntervention: (intervention: Intervention) => void;
   onNavigateToScan: () => void;
   language: Language;
+  initialOpenIntervention?: boolean;
+  targetObservationId?: string | null;
 }
 
 export const PassportScreen: FC<PassportScreenProps> = ({
@@ -36,16 +38,18 @@ export const PassportScreen: FC<PassportScreenProps> = ({
   onAddIntervention,
   onNavigateToScan,
   language,
+  initialOpenIntervention = false,
+  targetObservationId = null,
 }) => {
   const t = translations[language];
 
   // Modals state
   const [deletingObsId, setDeletingObsId] = useState<string | null>(null);
-  const [isInterventionModalOpen, setIsInterventionModalOpen] = useState(false);
+  const [isInterventionModalOpen, setIsInterventionModalOpen] = useState(initialOpenIntervention);
   const [selectedObsForIntervention, setSelectedObsForIntervention] = useState<string | undefined>(undefined);
   const [interventionAction, setInterventionAction] = useState('');
   const [interventionNotes, setInterventionNotes] = useState('');
-  const [expandedObsId, setExpandedObsId] = useState<string | null>(null);
+  const [expandedObsId, setExpandedObsId] = useState<string | null>(targetObservationId);
 
   // Combine observations and interventions into a chronological timeline
   type TimelineItem = 

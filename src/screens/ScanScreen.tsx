@@ -105,6 +105,28 @@ export const ScanScreen: FC<ScanScreenProps> = ({
     if (cameraActive) {
       stopCamera();
       setTimeout(startCamera, 100);
+    } else {
+      startCamera();
+    }
+  };
+
+  const handleToggleTorch = async () => {
+    if (!cameraActive) {
+      await startCamera();
+    }
+    const nextState = !torchOn;
+    setTorchOn(nextState);
+    if (streamRef.current) {
+      const track = streamRef.current.getVideoTracks()[0];
+      if (track && 'applyConstraints' in track) {
+        try {
+          await track.applyConstraints({
+            advanced: [{ torch: nextState } as any],
+          });
+        } catch {
+          // torch constraint not supported
+        }
+      }
     }
   };
 
@@ -146,8 +168,10 @@ export const ScanScreen: FC<ScanScreenProps> = ({
     };
     setCapturedImage(sampleMap[preset]);
     setCaptureTime(new Date().toISOString());
-    stopCamera();
-    setScanState('preview');
+    if (viewfinderMode === 'camera') {
+      stopCamera();
+      setScanState('preview');
+    }
   };
 
   const handleRetake = () => {
@@ -560,9 +584,9 @@ export const ScanScreen: FC<ScanScreenProps> = ({
               </button>
 
               <button
-                onClick={() => setTorchOn(!torchOn)}
+                onClick={handleToggleTorch}
                 className={`p-3 rounded-full backdrop-blur-md active:scale-95 transition-all ${
-                  torchOn ? 'bg-[#FDD835] text-black' : 'bg-white/10 hover:bg-white/20 text-white'
+                  torchOn ? 'bg-[#FDD835] text-black shadow-lg' : 'bg-white/10 hover:bg-white/20 text-white'
                 }`}
                 title="Torch"
               >
@@ -570,27 +594,58 @@ export const ScanScreen: FC<ScanScreenProps> = ({
               </button>
             </div>
 
+            {/* 3D Specimen Analyze CTA if in 3d_twin mode */}
+            {viewfinderMode === '3d_twin' && (
+              <button
+                onClick={() => {
+                  const sampleMap = {
+                    leaf_curl: '/sample-leafcurl.svg',
+                    blast: '/sample-storm.svg',
+                    healthy: '/sample-healthy.svg',
+                  };
+                  setCapturedImage(sampleMap[selectedPreset]);
+                  setScanState('preview');
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-linear-to-r from-[#2E7D32] to-[#76FF03] text-[#0C2518] font-black text-xs tracking-wider uppercase shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Analyze 3D Specimen</span>
+              </button>
+            )}
+
             {/* Sample Selector fallback buttons for instant reliable demo */}
             <div className="pt-2 border-t border-white/10">
               <div className="text-[10px] text-center text-white/60 mb-2 font-mono">
-                {t.selectSampleImage}
+                {viewfinderMode === '3d_twin' ? 'SWITCH 3D SPECIMEN CONDITION' : t.selectSampleImage}
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => handleSelectPresetSample('leaf_curl')}
-                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-semibold text-[#FFB74D] border border-[#FFB74D]/40 active:scale-95 transition-all"
+                  className={`py-1.5 px-2 rounded-lg text-[10px] font-semibold transition-all ${
+                    selectedPreset === 'leaf_curl'
+                      ? 'bg-[#FFB74D] text-[#0C2518] font-bold shadow-xs ring-2 ring-white/50'
+                      : 'bg-white/10 hover:bg-white/20 text-[#FFB74D] border border-[#FFB74D]/40'
+                  }`}
                 >
                   Leaf Curl
                 </button>
                 <button
                   onClick={() => handleSelectPresetSample('blast')}
-                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-semibold text-[#FF8A80] border border-[#FF8A80]/40 active:scale-95 transition-all"
+                  className={`py-1.5 px-2 rounded-lg text-[10px] font-semibold transition-all ${
+                    selectedPreset === 'blast'
+                      ? 'bg-[#FF8A80] text-[#0C2518] font-bold shadow-xs ring-2 ring-white/50'
+                      : 'bg-white/10 hover:bg-white/20 text-[#FF8A80] border border-[#FF8A80]/40'
+                  }`}
                 >
                   Storm Lodging
                 </button>
                 <button
                   onClick={() => handleSelectPresetSample('healthy')}
-                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-semibold text-[#81C784] border border-[#81C784]/40 active:scale-95 transition-all"
+                  className={`py-1.5 px-2 rounded-lg text-[10px] font-semibold transition-all ${
+                    selectedPreset === 'healthy'
+                      ? 'bg-[#81C784] text-[#0C2518] font-bold shadow-xs ring-2 ring-white/50'
+                      : 'bg-white/10 hover:bg-white/20 text-[#81C784] border border-[#81C784]/40'
+                  }`}
                 >
                   Healthy Leaf
                 </button>
