@@ -16,9 +16,10 @@ import {
   Activity, 
   FileText, 
   Plus, 
-  KeyRound 
+  KeyRound
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { Cryptographic3DBlock } from '../components/evidence/Cryptographic3DBlock';
 
 interface EvidenceScreenProps {
   field: Field;
@@ -327,6 +328,16 @@ export const EvidenceScreen: FC<EvidenceScreenProps> = ({
                 {activePackage.assessment.condition}
               </span>
             </div>
+          </div>
+
+          {/* 3D Cryptographic Evidence Vault Monolith */}
+          <div className="rounded-2xl overflow-hidden shadow-lg border border-emerald-950/80">
+            <Cryptographic3DBlock
+              hash={activePackage.currentHash}
+              isTampered={!!activePackage.isTampered}
+              isVerified={activePackage.verificationStatus === 'verified'}
+              onRestore={handleRestoreOriginal}
+            />
           </div>
 
           {/* HASH UI: SHA-256 with Real Hashes */}

@@ -93,6 +93,12 @@ export const HomeScreen: FC<HomeScreenProps> = ({
             />
             {/* Dark gradient overlay on left for sharp legibility */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-transparent" />
+            {/* Ambient sunlight dust animation */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute top-1/4 left-1/3 w-1.5 h-1.5 rounded-full bg-[#FFF59D] animate-float-dust opacity-40" style={{ animationDelay: '0.2s', animationDuration: '4.5s' }} />
+              <div className="absolute top-1/2 left-2/3 w-2 h-2 rounded-full bg-[#C8E6C9] animate-float-dust opacity-30" style={{ animationDelay: '1.2s', animationDuration: '6s' }} />
+              <div className="absolute top-3/4 left-1/2 w-1 h-1 rounded-full bg-[#FFF59D] animate-float-dust opacity-50" style={{ animationDelay: '2.4s', animationDuration: '5s' }} />
+            </div>
           </div>
 
           {/* Top Info Row */}

@@ -17,6 +17,7 @@ import {
   PlusCircle, 
   FileCheck 
 } from 'lucide-react';
+import { Crop3DScanner } from '../components/scanner/Crop3DScanner';
 
 interface ScanScreenProps {
   field: Field;
@@ -28,6 +29,7 @@ interface ScanScreenProps {
 }
 
 type ScanState = 'ready' | 'preview' | 'analyzing' | 'result';
+type ViewfinderMode = 'camera' | '3d_twin';
 
 export const ScanScreen: FC<ScanScreenProps> = ({
   field,
@@ -42,6 +44,7 @@ export const ScanScreen: FC<ScanScreenProps> = ({
   const streamRef = useRef<MediaStream | null>(null);
 
   const [scanState, setScanState] = useState<ScanState>('ready');
+  const [viewfinderMode, setViewfinderMode] = useState<ViewfinderMode>('camera');
   const [cameraActive, setCameraActive] = useState(false);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
   const [torchOn, setTorchOn] = useState(false);
@@ -241,8 +244,25 @@ export const ScanScreen: FC<ScanScreenProps> = ({
           <div className="text-xs font-bold tracking-widest uppercase text-[#81C784]">
             {t.cameraTitle}
           </div>
-          <div className="text-[10px] text-[#A5D6A7]/80 font-mono">
-            {field.id} · {field.crop}
+          {/* Mode Pill Toggle */}
+          <div className="flex bg-black/50 p-0.5 rounded-lg border border-white/10 text-[9px] font-mono mt-1">
+            <button
+              onClick={() => setViewfinderMode('camera')}
+              className={`px-2 py-0.5 rounded-md transition-all ${
+                viewfinderMode === 'camera' ? 'bg-[#2E7D32] text-white font-bold' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Camera
+            </button>
+            <button
+              onClick={() => setViewfinderMode('3d_twin')}
+              className={`px-2 py-0.5 rounded-md transition-all flex items-center gap-1 ${
+                viewfinderMode === '3d_twin' ? 'bg-[#76FF03] text-[#0C2518] font-bold shadow-xs' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Sparkles className="w-2.5 h-2.5" />
+              <span>3D Specimen</span>
+            </button>
           </div>
         </div>
 
@@ -255,65 +275,71 @@ export const ScanScreen: FC<ScanScreenProps> = ({
       {/* Main Viewport Content based on ScanState */}
       <div className="relative flex-1 flex flex-col items-center justify-center overflow-hidden px-4">
         {scanState === 'ready' && (
-          <div className="relative w-full max-w-sm aspect-3/4 rounded-3xl overflow-hidden bg-black/60 border-2 border-[#2E7D32]/40 shadow-2xl flex flex-col items-center justify-center">
-            {/* Real Camera Video Element */}
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className={`absolute inset-0 w-full h-full object-cover ${cameraActive ? 'block' : 'hidden'}`}
-            />
+          viewfinderMode === '3d_twin' ? (
+            <div className="w-full max-w-sm">
+              <Crop3DScanner diseaseType={selectedPreset} />
+            </div>
+          ) : (
+            <div className="relative w-full max-w-sm aspect-3/4 rounded-3xl overflow-hidden bg-black/60 border-2 border-[#2E7D32]/40 shadow-2xl flex flex-col items-center justify-center">
+              {/* Real Camera Video Element */}
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className={`absolute inset-0 w-full h-full object-cover ${cameraActive ? 'block' : 'hidden'}`}
+              />
 
-            {/* Viewfinder Framing Reticle */}
-            <div className="absolute inset-6 border border-white/20 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
-              <div className="flex justify-between">
-                <div className="w-5 h-5 border-t-2 border-l-2 border-[#81C784]" />
-                <div className="w-5 h-5 border-t-2 border-r-2 border-[#81C784]" />
-              </div>
-              <div className="flex justify-center">
-                <div className="px-3 py-1 rounded-full bg-black/50 text-[10px] tracking-wider text-white/80 font-mono backdrop-blur-xs">
-                  ALIGN LEAF IN FRAME
+              {/* Viewfinder Framing Reticle */}
+              <div className="absolute inset-6 border border-white/20 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
+                <div className="flex justify-between">
+                  <div className="w-5 h-5 border-t-2 border-l-2 border-[#81C784]" />
+                  <div className="w-5 h-5 border-t-2 border-r-2 border-[#81C784]" />
+                </div>
+                <div className="flex justify-center">
+                  <div className="px-3 py-1 rounded-full bg-black/50 text-[10px] tracking-wider text-white/80 font-mono backdrop-blur-xs">
+                    ALIGN LEAF IN FRAME
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <div className="w-5 h-5 border-b-2 border-l-2 border-[#81C784]" />
+                  <div className="w-5 h-5 border-b-2 border-r-2 border-[#81C784]" />
                 </div>
               </div>
-              <div className="flex justify-between">
-                <div className="w-5 h-5 border-b-2 border-l-2 border-[#81C784]" />
-                <div className="w-5 h-5 border-b-2 border-r-2 border-[#81C784]" />
-              </div>
-            </div>
 
-            {/* If camera is not yet active: CTA to start real camera */}
-            {!cameraActive && (
-              <div className="relative z-10 flex flex-col items-center gap-3 p-6 text-center">
-                <div className="p-4 rounded-full bg-[#123824] text-[#81C784] border border-[#2E7D32]/50 shadow-lg">
-                  <Camera className="w-8 h-8" />
+              {/* If camera is not yet active: CTA to start real camera */}
+              {!cameraActive && (
+                <div className="relative z-10 flex flex-col items-center gap-3 p-6 text-center">
+                  <div className="p-4 rounded-full bg-[#123824] text-[#81C784] border border-[#2E7D32]/50 shadow-lg">
+                    <Camera className="w-8 h-8" />
+                  </div>
+                  <p className="text-xs text-[#D7E3DA] max-w-xs">
+                    {t.cameraPermissionNeeded}
+                  </p>
+                  <button
+                    onClick={startCamera}
+                    className="px-5 py-2.5 rounded-xl bg-[#2E7D32] hover:bg-[#388E3C] text-white font-bold text-xs tracking-wider uppercase shadow-md active:scale-95 transition-all"
+                  >
+                    {t.startCamera}
+                  </button>
                 </div>
-                <p className="text-xs text-[#D7E3DA] max-w-xs">
-                  {t.cameraPermissionNeeded}
-                </p>
-                <button
-                  onClick={startCamera}
-                  className="px-5 py-2.5 rounded-xl bg-[#2E7D32] hover:bg-[#388E3C] text-white font-bold text-xs tracking-wider uppercase shadow-md active:scale-95 transition-all"
-                >
-                  {t.startCamera}
-                </button>
-              </div>
-            )}
+              )}
 
-            {/* Subdued Real-time Device Metadata overlay */}
-            <div className="absolute bottom-2 inset-x-3 py-1.5 px-2.5 rounded-xl bg-black/60 backdrop-blur-md flex items-center justify-between text-[10px] text-white/80 font-mono">
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-[#81C784]" />
-                <span className="truncate max-w-[120px]">
-                  {field.location === 'Location not set' ? 'GPS Not captured' : field.location}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Activity className="w-3 h-3 text-[#81C784]" />
-                <span>{sensorSnapshot?.stability || 'Sensor Active'}</span>
+              {/* Subdued Real-time Device Metadata overlay */}
+              <div className="absolute bottom-2 inset-x-3 py-1.5 px-2.5 rounded-xl bg-black/60 backdrop-blur-md flex items-center justify-between text-[10px] text-white/80 font-mono">
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-[#81C784]" />
+                  <span className="truncate max-w-[120px]">
+                    {field.location === 'Location not set' ? 'GPS Not captured' : field.location}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-[#81C784]" />
+                  <span>{sensorSnapshot?.stability || 'Sensor Active'}</span>
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
 
         {/* PREVIEW OF CAPTURED IMAGE */}

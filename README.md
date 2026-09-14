@@ -63,6 +63,37 @@ This fails farmers and insurers alike because it lacks context, progression, and
 
 ---
 
+## 🌐 3D Digital Twin & Advanced Visual Graphics
+
+Kshetra incorporates interactive Three.js WebGL graphics and spatial agricultural telemetry:
+
+### 1. Interactive 3D Cadastral Digital Twin (`Cadastral3DViewer`)
+- **Procedural 3D Parcel Mesh**: Realistic elevation contours and terraced agricultural bunds for Field `KR-1042`.
+- **Multispectral Shaders**:
+  - `NDVI`: Thermal chlorophyll canopy gradient (vibrant emerald `>0.8`, amber moderate, and red stress hotspots).
+  - `Satellite`: High-definition photorealistic terraced field textures.
+  - `Contours`: Topographical elevation wireframes.
+- **Survey Pegs & Laser Perimeter**: 3D corner survey pillars connected by glowing laser boundary lines.
+- **Centroid Beacon**: Real-time rotating holographic diamond with expanding sonar pulse rings.
+- **Drone Flyover Orbit**: Automated cinematic 360° orbital camera with touch/mouse drag controls, pitch altitude adjustment, and floating atmospheric dust particles.
+
+### 2. 3D Holographic Crop Specimen Scanner (`Crop3DScanner`)
+- **Sculpted 3D Specimen Blade**: Curving monocot leaf geometry with central midrib and parallel monocot leaf veins.
+- **Laser Scan Plane**: Oscillating 3D laser slicing plane with glowing grid matrix and variable opacity.
+- **Spatial Lesion Hotspots**: Interactive 3D symptom beacons positioned directly on the leaf blade (Primary Blast lesion, appressorium attachment site).
+- **Spectral Absorption HUD**: Real-time chlorophyll absorbance gauges (450nm & 660nm) and epicuticular integrity telemetry.
+- **Inspection Modes**: Switch between `3D Visual`, `Thermal IR`, and `Matrix` cellular stress wireframe.
+
+### 3. 3D Cryptographic Evidence Vault Monolith (`Cryptographic3DBlock`)
+- **Translucent Crystal Monolith**: WebGL glass-like cube representing the sealed cryptographic evidence package.
+- **Dynamic State Reaction**:
+  - *Verified State*: Emerald crystal lattice (`#00E676`), orbiting harmonic particle rings, and pristine crystal edges.
+  - *Tampered State*: Shifts to crimson alert pulses (`#FF1744`), with jagged geometric fracture cracks appearing across the facets and erratic spark particles!
+  - *Restorative Wave*: Triggering "Restore Block" clears internal fractures with a sweeping emerald wave.
+- **Orbit Inspection**: 360° touch/mouse rotation to inspect every facet of the cryptographic seal.
+
+---
+
 ## 🔒 Technical Honesty & System Boundaries
 
 | Capability | Current Browser Prototype (POC) | Native Android Target Roadmap |
